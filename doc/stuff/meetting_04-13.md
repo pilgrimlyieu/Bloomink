@@ -1,7 +1,7 @@
 # 4 月 13 日组会
 
 - 记录人：[@PilgrimLyieu](https://github.com/pilgrimlyieu)
-- 记录时间：2024 年 4 月 13 日
+- 记录时间：2024 年 4 月 14 日
 
 ## 会前
 
@@ -41,7 +41,11 @@
 3. 组长简单介绍开发流程，使用 Git 进行版本控制
 4. 进行简单的分工确定
 
-## GitHub Student Pack
+### GitHub Student Pack
+
+组长本人在[去年八月份拿到录取通知书后就迅速申请并通过了](https://pilgrimlyieu.github.io/2023/08/nju-email)，在指导组员进行申请时，也发现了 GitHub 政策的变动：例如由于 GitHub 安全政策的收紧，现在学生包认证需要先完成 2FA，而当时则是不必要的[^not_true_maybe]；再比如学信网资料认证时，部分组员需要完善 GitHub 个人信息等。
+
+[^not_true_maybe]: 也未必如此，在此之前本人就已使用 GitHub Mobile，也可以完成 2FA。
 
 ![](img/04-13_github-student-pack-0.jpg)
 
@@ -51,13 +55,13 @@
 
 ![](img/04-13_github-student-pack-3.jpg)
 
-## 选题方向
+### 选题方向
 
 在 AI 的帮助下，确定了基本框架是制作一个**用户创作平台**，并包含以下特性（在开发过程中可能进行舍弃）：
 
 ![](img/04-13_ai-ideas.jpg)
 
-![](img/04-13-schedule.jpg)
+![](img/04-13_schedule.jpg)
 
 1. 创作
     - 以文字为基础，并提供图片、音频、视频等多媒体支持
@@ -89,7 +93,7 @@
 
 > 还缺乏具体的对比
 
-## 流程控制
+### 流程控制
 
 使用 Git 进行版本控制。
 
@@ -107,7 +111,7 @@
 
 ![](img/04-13_pr.jpg)
 
-## 项目分工
+### 项目分工
 
 初步分工如下：
 
