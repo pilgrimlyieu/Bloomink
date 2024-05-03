@@ -1,17 +1,19 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div id="app">
+    <Sidebar />
+  </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import { defineComponent } from "vue";
+import { Sidebar } from "./layout/components";
 
-export default {
+export default defineComponent({
   name: "App",
   components: {
-    HelloWorld,
+    Sidebar,
   },
-};
+});
 </script>
 
 <style>
