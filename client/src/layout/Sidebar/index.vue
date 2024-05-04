@@ -151,7 +151,7 @@ export default defineComponent({
       activeComponent,
       activateComponent,
       activeKey: ref(null),
-      collapsed: ref(true),
+      collapsed: ref(false), // TODO: 发布时改为 true
       defaultExpandAll: ref(true),
       menuOptions,
     };
