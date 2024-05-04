@@ -21,16 +21,19 @@
           @update:value="activateComponent"
         />
       </n-layout-sider>
-      <n-layout-content>
+      <n-layout-content style="padding-left: 2px">
         <div
           class="content-container"
           :style="{
             width: `calc(${sidebarWidth} - ${collapsed ? 64 : 160}px)`,
           }"
         >
-          <n-scrollbar style="max-height: 80vh">
+          <n-layout
+            :native-scrollbar="false"
+            style="height: 85vh; padding: 5px"
+          >
             <component :is="activeComponent" />
-          </n-scrollbar>
+          </n-layout>
         </div>
       </n-layout-content>
     </n-layout>
@@ -52,20 +55,22 @@ import {
 } from "@vicons/fluent";
 import { MessageCircle } from "@vicons/tabler";
 import { TipsAndUpdatesOutlined } from "@vicons/material";
-import AIChat from "@/components/AIChat.vue";
-import AIImage from "@/components/AIImage.vue";
-import AITips from "@/components/AITips.vue";
-import Attachment from "@/components/Attachment.vue";
-import CultureLibrary from "@/components/CultureLibrary.vue";
-import FormulaOCR from "@/components/FormulaOCR.vue";
-import RandomPoem from "@/components/RandomPoem.vue";
-import TextOCR from "@/components/TextOCR.vue";
+import {
+  AIChat,
+  AIImage,
+  AITips,
+  Attachment,
+  CultureLibrary,
+  FormulaOCR,
+  RandomPoem,
+  TextOCR,
+} from "@/components";
 
 function renderIcon(icon) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-const sidebarWidth = "36%";
+const sidebarWidth = "33vw";
 
 const menuOptions = [
   {
@@ -127,7 +132,7 @@ const menuOptions = [
 export default defineComponent({
   name: "Sidebar",
   setup() {
-    const activeComponent = ref(CultureLibrary);
+    const activeComponent = ref(Attachment);
     const activateComponent = (key) => {
       const components = {
         "culture-library": CultureLibrary,
@@ -146,7 +151,7 @@ export default defineComponent({
       activeComponent,
       activateComponent,
       activeKey: ref(null),
-      collapsed: ref(false),
+      collapsed: ref(true),
       defaultExpandAll: ref(true),
       menuOptions,
     };
@@ -156,7 +161,7 @@ export default defineComponent({
 
 <style scoped>
 .content-container {
-  height: 100%;
+  height: 85vh;
   border: 2px solid #f0f0f0bd;
   text-align: left;
 }
