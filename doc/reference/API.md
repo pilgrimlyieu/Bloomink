@@ -1,3 +1,7 @@
+<!-- {{{初版计划，已弃用 -->
+<details>
+<summary>初版计划，已弃用</summary>
+
 ## Users
 
 - `server/users.py`
@@ -64,3 +68,6 @@
 | `GET` | `/api/categories` | `category` | - | 进入某一类 |
 | `POST` | `/api/users/{uid}/follow` | - | - | 关注 |
 | `POST` | `/api/search` | `keyword` | - | 搜索 header 中的关键词 |
+
+</details>
+<!-- }}} -->
