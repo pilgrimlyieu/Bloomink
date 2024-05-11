@@ -1,14 +1,16 @@
 <template>
-  <div id="app">
-    <Sidebar class="sidebar" />
-    <n-space></n-space>
-    <Editor class="editor" />
-  </div>
+  <n-modal-provider>
+    <div id="app">
+      <Sidebar class="sidebar" />
+      <n-space></n-space>
+      <Editor class="editor" />
+    </div>
+  </n-modal-provider>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import { Sidebar, Editor } from "./layout/components";
+import { Sidebar, Editor } from "./layout";
 
 export default defineComponent({
   name: "App",

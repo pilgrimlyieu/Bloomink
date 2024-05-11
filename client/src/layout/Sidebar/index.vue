@@ -132,25 +132,26 @@ const menuOptions = [
 export default defineComponent({
   name: "Sidebar",
   setup() {
-    const activeComponent = ref(Attachment);
+    const components = {
+      "culture-library": CultureLibrary,
+      "attachment-library": Attachment,
+      "chat-ai": AIChat,
+      "tips-ai": AITips,
+      "image-ai": AIImage,
+      "text-ocr": TextOCR,
+      "formula-ocr": FormulaOCR,
+      "daily-poem": RandomPoem,
+    };
+    const activeKey = ref("culture-library");
+    const activeComponent = ref(components[activeKey.value]);
     const activateComponent = (key) => {
-      const components = {
-        "culture-library": CultureLibrary,
-        "attachment-library": Attachment,
-        "chat-ai": AIChat,
-        "tips-ai": AITips,
-        "image-ai": AIImage,
-        "text-ocr": TextOCR,
-        "formula-ocr": FormulaOCR,
-        "daily-poem": RandomPoem,
-      };
       activeComponent.value = components[key];
     };
     return {
       sidebarWidth,
       activeComponent,
+      activeKey,
       activateComponent,
-      activeKey: ref(null),
       collapsed: ref(false), // TODO: 发布时改为 true
       defaultExpandAll: ref(true),
       menuOptions,

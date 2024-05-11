@@ -5,14 +5,15 @@
 <script setup>
 import Vditor from "vditor";
 import "vditor/dist/index.css";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 
 const vditor = ref(null);
+const globalState = inject("globalState");
 
 onMounted(() => {
   vditor.value = new Vditor("vditor", {
     height: "85vh",
-    width: "64vw",
+    width: "65vw",
     toolbar: [
       "emoji",
       "headings",
@@ -54,6 +55,12 @@ onMounted(() => {
     },
     mode: "sv",
     placeholder: "开启文化传承之旅吧！",
+  });
+  watchEffect(() => {
+    if (globalState.insertContent) {
+      vditor.value.insertValue(globalState.insertContent);
+      globalState.insertContent = "";
+    }
   });
 });
 </script>
