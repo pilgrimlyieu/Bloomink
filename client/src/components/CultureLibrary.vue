@@ -10,6 +10,8 @@
         @click="showPoetryDetail(poem.id)"
         :type="specialTagType(poem.pid)"
         style="margin: 5px 5px 0 0; cursor: pointer; user-select: none"
+        size="small"
+        round
       >
         《{{ getPoetryName(poem.id) }}》{{ getPoetName(poem.id) }}
       </n-tag>
@@ -18,7 +20,7 @@
 </template>
 
 <script>
-import { useModal, NButton, NTabs, NTabPane, NImage } from "naive-ui";
+import { useModal, NButton, NTabs, NTabPane, NImage, NTag } from "naive-ui";
 import { inject } from "vue";
 
 export default {
@@ -83,6 +85,26 @@ export default {
                       }),
                     ])
                   : null,
+                h(NTabPane, { name: "其他标签" }, () => [
+                  h(
+                    "div",
+                    { style: { display: "flex", flexWrap: "wrap" } },
+                    poetry.tags.map((tag, index) =>
+                      h(
+                        NTag,
+                        {
+                          size: "large",
+                          round: true,
+                          style: {
+                            margin: "5px 5px 0 0",
+                          },
+                          type: this.specialTagType(index),
+                        },
+                        () => tag
+                      )
+                    )
+                  ),
+                ]),
               ],
             }
           ),
