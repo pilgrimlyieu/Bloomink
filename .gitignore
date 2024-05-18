@@ -1,4 +1,6 @@
 .venv/
+private.tex
+**/doc/**/out
 
 ######################
 # Python

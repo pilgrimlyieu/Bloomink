@@ -1,26 +1,43 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <n-modal-provider>
+    <n-message-provider>
+      <div id="app">
+        <Sidebar class="sidebar" />
+        <n-space></n-space>
+        <Editor class="editor" /></div
+    ></n-message-provider>
+  </n-modal-provider>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import { defineComponent } from "vue";
+import { Sidebar, Editor } from "./layout";
 
-export default {
+export default defineComponent({
   name: "App",
   components: {
-    HelloWorld,
+    Sidebar,
+    Editor,
   },
-};
+});
 </script>
 
 <style>
 #app {
+  display: flex;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
+}
+
+.sidebar {
+  margin-right: 10px;
+}
+
+.editor {
+  text-align: left;
 }
 </style>
