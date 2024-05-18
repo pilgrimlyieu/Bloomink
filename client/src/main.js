@@ -10,7 +10,6 @@ const globalState = reactive({
   poetries: [],
   insertContent: "",
   keys: [],
-  poemID: 8,
 });
 
 if (globalState.tags.length === 0) {

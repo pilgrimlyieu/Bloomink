@@ -4,14 +4,22 @@ const Components = require("unplugin-vue-components/webpack");
 const { NaiveUiResolver } = require("unplugin-vue-components/resolvers");
 module.exports = defineConfig({
   transpileDependencies: true,
-  // devServer: {
-  //   proxy: {
-  //     "/api": {
-  //       target: "http://localhost:5000",
-  //       changeOrigin: true,
-  //     },
-  //   },
-  // },
+  devServer: {
+    open: true,
+    client: {
+      overlay: false,
+    },
+    proxy: {
+      "/baiduocr": {
+        target: "https://aip.baidubce.com",
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          "^/baiduocr": "",
+        },
+      },
+    },
+  },
   configureWebpack: {
     plugins: [
       require("unplugin-auto-import/webpack").default({
