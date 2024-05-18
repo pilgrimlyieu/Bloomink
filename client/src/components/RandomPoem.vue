@@ -6,33 +6,45 @@
       ></n-space
     >
     <n-card
-      :title="`📖《${getPoetryName(globalState.poemID)}》${getPoetName(
-        globalState.poemID
-      )}`"
+      :title="`📖《${getPoetryName(poemID)}》${getPoetName(poemID)}`"
       style="width: 100%"
       embedded
       header-style="font-size: 18px; font-weight: bold; text-align: center"
     >
-      {{ poetries[globalState.poemID]?.content }}
+      {{ poetries[poemID]?.content }}
     </n-card>
     <n-space></n-space>
     <n-collapse>
       <n-collapse-item name="翻译" title="翻译">
-        {{ poetries[globalState.poemID]?.fanyi.replace(/^译文\s*/, "") }}
+        <span
+          v-html="t(poetries[poemID]?.fanyi.replace(/^译文\s*/, ''))"
+        ></span>
       </n-collapse-item>
       <n-collapse-item name="赏析" title="赏析">
-        {{ poetries[globalState.poemID]?.shangxi }}
+        <span v-html="t(poetries[poemID]?.shangxi)"></span>
       </n-collapse-item>
       <n-collapse-item name="额外信息" title="额外信息">
-        {{ poetries[globalState.poemID]?.about }}
+        <span v-html="t(poetries[poemID]?.about)"></span>
       </n-collapse-item>
       <n-collapse-item name="作者" title="作者">
         <n-image
-          :src="poetries[globalState.poemID]?.poet.image"
+          :src="poetries[poemID]?.poet.image"
           object-fit="cover"
           size="100"
         ></n-image>
-        <div>{{ poetries[globalState.poemID]?.poet.desc }}</div>
+        <br />
+        <span v-html="t(poetries[poemID]?.poet.desc)"></span>
+      </n-collapse-item>
+      <n-collapse-item name="标签" title="标签">
+        <n-tag
+          v-for="(tag, index) in poetries[poemID].tags"
+          :type="specialTagType(index)"
+          style="margin: 5px 5px 0 0; cursor: pointer; user-select: none"
+          round
+          size="large"
+        >
+          {{ tag }}
+        </n-tag>
       </n-collapse-item>
     </n-collapse>
   </div>
@@ -46,9 +58,8 @@ export default {
   setup() {
     const globalState = inject("globalState");
     const keys = Object.keys(globalState.poetries);
-    globalState.poemID = "71150"; // Debug default value
     return {
-      globalState,
+      poemID: ref("71150"),
       poetries: computed(() => globalState.poetries),
       keys,
     };
@@ -58,7 +69,7 @@ export default {
       return text.replace(/\n{1,2}/g, "<br>");
     },
     chooseRandomPoem() {
-      this.globalState.poemID =
+      this.poemID =
         this.keys[Math.floor(Math.random() * this.keys.length)].toString();
     },
     getPoetryName(id) {
@@ -66,6 +77,11 @@ export default {
     },
     getPoetName(id) {
       return this.poetries[id]?.poet.name;
+    },
+    specialTagType(id) {
+      return ["default", "primary", "info", "success", "warning", "error"][
+        id % 6
+      ];
     },
   },
 };
