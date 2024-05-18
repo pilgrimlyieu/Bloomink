@@ -1,22 +1,24 @@
 <template>
-  <n-collapse>
-    <n-collapse-item
-      v-for="tag in tags"
-      :name="tag.tid"
-      :title="`${tag.tag}（${tag.sum}）`"
-    >
-      <n-tag
-        v-for="poem in tag.poems"
-        @click="showPoetryDetail(poem.id)"
-        :type="specialTagType(poem.pid)"
-        style="margin: 5px 5px 0 0; cursor: pointer; user-select: none"
-        size="small"
-        round
+  <KeepAlive>
+    <n-collapse>
+      <n-collapse-item
+        v-for="tag in tags"
+        :name="tag.tid"
+        :title="`${tag.tag}（${tag.sum}）`"
       >
-        《{{ getPoetryName(poem.id) }}》{{ getPoetName(poem.id) }}
-      </n-tag>
-    </n-collapse-item>
-  </n-collapse>
+        <n-tag
+          v-for="poem in tag.poems"
+          @click="showPoetryDetail(poem.id)"
+          :type="specialTagType(poem.pid)"
+          style="margin: 5px 5px 0 0; cursor: pointer; user-select: none"
+          size="small"
+          round
+        >
+          《{{ getPoetryName(poem.id) }}》{{ getPoetName(poem.id) }}
+        </n-tag>
+      </n-collapse-item>
+    </n-collapse>
+  </KeepAlive>
 </template>
 
 <script>
@@ -148,9 +150,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.attachment-container {
-  /* Adjust these values as needed */
-}
-</style>
