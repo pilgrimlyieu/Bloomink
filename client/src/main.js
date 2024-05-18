@@ -9,9 +9,11 @@ const globalState = reactive({
   tags: [],
   poetries: [],
   insertContent: "",
+  keys: [],
 });
 
 if (globalState.tags.length === 0) {
+  let index = 0;
   for (let i = 1; i <= globalState.tagLimit; i++) {
     axios
       .get(`/assets/tag/${String(i).padStart(3, "0")}.json`)
@@ -20,6 +22,7 @@ if (globalState.tags.length === 0) {
         for (const poem of response.data.poems) {
           if (!globalState.poetries[poem.id]) {
             axios.get(`/assets/poetry/${poem.id}.json`).then((response) => {
+              globalState.keys[index++] = poem.id;
               globalState.poetries[poem.id] = response.data;
             });
           }
@@ -27,5 +30,6 @@ if (globalState.tags.length === 0) {
       });
   }
 }
+
 app.provide("globalState", globalState);
 app.mount("#app");

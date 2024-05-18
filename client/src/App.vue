@@ -1,10 +1,11 @@
 <template>
   <n-modal-provider>
-    <div id="app">
-      <Sidebar class="sidebar" />
-      <n-space></n-space>
-      <Editor class="editor" />
-    </div>
+    <n-message-provider>
+      <div id="app">
+        <Sidebar class="sidebar" />
+        <n-space></n-space>
+        <Editor class="editor" /></div
+    ></n-message-provider>
   </n-modal-provider>
 </template>
 
