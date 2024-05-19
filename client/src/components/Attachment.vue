@@ -48,7 +48,7 @@
   </n-card>
 
   <n-card style="text-align: center">
-    <n-image class="attachment-image" src="https://616pic.com/sucai/vd9idy6x0.html" />
+    <n-image class="attachment-image" src="https://photo.16pic.com/00/38/49/16pic_3849884_b.jpg" />
     <n-button text @click="() => openWebsite('https://www.gzct.com')">
       <template #icon>
         <n-icon>
@@ -60,12 +60,12 @@
   </n-card>
 
   <n-card style="text-align: center">
-    <n-image class="attachment-image" src="http://www.guoxue.com" />
-    <n-button text
-      @click="() => openWebsite('https://baike.baidu.com/pic/%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AD%A6%E7%BD%91/9256297/1/8605f5f86d1c9131d9f9fdb4?fromModule=lemma_top-image&ct=single#aid=1&pic=8605f5f86d1c9131d9f9fdb4')">
+    <n-image class="attachment-image"
+      src="https://baike.baidu.com/pic/%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AD%A6%E7%BD%91/9256297/1/8605f5f86d1c9131d9f9fdb4?fromModule=lemma_top-image&ct=single#aid=1&pic=8605f5f86d1c9131d9f9fdb4" />
+    <n-button text @click="() => openWebsite('http://www.guoxue.com')">
       <template #icon>
         <n-icon>
-          <MdConstruct />
+          <BookLetter24Filled />
         </n-icon>
       </template>
       中国国学网
@@ -92,10 +92,9 @@
 </template>
 
 <script>
-import { Newspaper, LibrarySharp } from "@vicons/ionicons5";
-import { BookSearch24Filled } from "@vicons/fluent";
-import { Library } from "@vicons/ionicons5";
-import { MdConstruct } from "@vicons/ionicons4";
+import { Newspaper, LibrarySharp, Library } from "@vicons/ionicons5";
+import { BookSearch24Filled, BookLetter24Filled } from "@vicons/fluent";
+
 export default {
   name: "Attachment",
   components: {
@@ -103,7 +102,7 @@ export default {
     LibrarySharp,
     BookSearch24Filled,
     Library,
-    MdConstruct,
+    BookLetter24Filled,
   },
   methods: {
     openWebsite(url) {
