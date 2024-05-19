@@ -18,6 +18,14 @@ module.exports = defineConfig({
           "^/baiduocr": "",
         },
       },
+      "/mathpixocr": {
+        target: "https://api.mathpix.com",
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          "^/mathpixocr": "",
+        },
+      },
     },
   },
   configureWebpack: {
