@@ -1,6 +1,6 @@
 <template>
   <n-space justify="center" style="margin-bottom: 3px">
-    <n-button type="primary" round size="small" @click="config = true"
+    <n-button type="error" secondary round size="small" @click="config = true"
       >配置百度 OCR API</n-button
     ></n-space
   >
@@ -31,13 +31,26 @@
     />
   </KeepAlive>
 
+  <n-progress
+    type="line"
+    :percentage="confidence"
+    :indicator-placement="'inside'"
+    :stroke-width="10"
+    :status="'warning'"
+    style="margin: 2px 0"
+  >
+    置信度 {{ confidence.toFixed(2) }}%
+  </n-progress>
+
   <n-button
     type="info"
     size="small"
+    secondary
     round
     @click="() => insertToEditor(ocrResult)"
     >插入</n-button
   >
+
   <n-drawer v-model:show="config" :width="500" placement="right">
     <n-drawer-content title="百度 OCR API 配置">
       API Key
@@ -70,6 +83,8 @@
         style="margin: 10px 0"
         >更新 Access Token</n-button
       >
+      <br />
+      OCR 类型
       <n-select v-model:value="ocrType" :options="ocrTypes"> </n-select>
       <template #password-visible-icon>
         <n-icon :size="16" :component="GlassesOutline" />
@@ -113,6 +128,7 @@ export default {
       AK,
       SK,
       AT,
+      confidence: ref(0),
       ocrResult: ref(null),
     };
   },
@@ -152,6 +168,7 @@ export default {
           this.AT || this.identificationRecognize()
         );
         formData.append("paragraph", "true");
+        formData.append("probability", "true");
         let options = {
           method: "POST",
           url: `/baiduocr/rest/2.0/ocr/v1/${this.ocrType}?access_token=${this.AT}`,
@@ -166,7 +183,7 @@ export default {
             if (this.ocrType === "webimage" || this.ocrType === "handwriting") {
               this.ocrResult = response.data.words_result
                 .map((word) => word.words)
-                .join("\n");
+                .join("");
             } else {
               const paragraphsResult = response.data.paragraphs_result;
               const wordsResult = response.data.words_result;
@@ -178,6 +195,16 @@ export default {
                   return words.join("");
                 })
                 .join("\n");
+            }
+            try {
+              this.confidence =
+                (response.data.words_result
+                  .map((word) => word.probability.average)
+                  .reduce((a, b) => a + b, 0) /
+                  response.data.words_result_num) *
+                100;
+            } catch (error) {
+              this.confidence = 0;
             }
           })
           .catch((error) => {

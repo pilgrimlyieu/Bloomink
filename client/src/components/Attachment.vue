@@ -1,6 +1,9 @@
 <template>
   <n-card style="text-align: center">
-    <n-image class="attachment-image" src="https://ziyuan.guwendao.net/siteimg/24jie/%e6%af%8d%e4%ba%b2%e8%8a%82.jpg" />
+    <n-image
+      class="attachment-image"
+      src="https://ziyuan.guwendao.net/siteimg/24jie/%e6%af%8d%e4%ba%b2%e8%8a%82.jpg"
+    />
     <n-button text @click="() => openWebsite('https://www.gushiwen.cn')">
       <template #icon>
         <n-icon>
@@ -12,7 +15,10 @@
   </n-card>
 
   <n-card style="text-align: center">
-    <n-image class="attachment-image" src="https://www.shuge.org/wp-content/uploads/2024/05/tianhouanlan.jpg" />
+    <n-image
+      class="attachment-image"
+      src="https://www.shuge.org/wp-content/uploads/2024/05/tianhouanlan.jpg"
+    />
     <n-button text @click="() => openWebsite('https://www.shuge.org')">
       <template #icon>
         <n-icon>
@@ -24,7 +30,10 @@
   </n-card>
 
   <n-card style="text-align: center">
-    <n-image class="attachment-image" src="http://www.dacihai.com.cn/static/img/bg.jpg" />
+    <n-image
+      class="attachment-image"
+      src="http://www.dacihai.com.cn/static/img/bg.jpg"
+    />
     <n-button text @click="() => openWebsite('http://www.dacihai.com.cn')">
       <template #icon>
         <n-icon>
