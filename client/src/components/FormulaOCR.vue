@@ -36,7 +36,7 @@
     type="primary"
     size="small"
     round
-    @click="() => insertToEditor(ocrLaTeX)"
+    @click="() => copyToClipboard(ocrLaTeX)"
     >复制 LaTeX</n-button
   >
   <n-button
@@ -63,7 +63,7 @@
     type="primary"
     size="small"
     round
-    @click="() => insertToEditor(ocrInline)"
+    @click="() => copyToClipboard(ocrInline)"
     >复制行内公式</n-button
   >
   <n-button
@@ -90,7 +90,7 @@
     type="primary"
     size="small"
     round
-    @click="() => insertToEditor(ocrDisplay)"
+    @click="() => copyToClipboard(ocrDisplay)"
     >复制行间公式</n-button
   >
   <n-button
@@ -117,7 +117,7 @@
     type="primary"
     size="small"
     round
-    @click="() => insertToEditor(ocrMarkdown)"
+    @click="() => copyToClipboard(ocrMarkdown)"
     >复制 MD</n-button
   >
   <n-button
@@ -176,6 +176,7 @@
 import { GlassesOutline, ArchiveOutline } from "@vicons/ionicons5";
 import { inject, ref } from "vue";
 import axios from "axios";
+import useClipboard from "vue-clipboard3";
 
 export default {
   name: "FormulaOCR",
@@ -221,6 +222,10 @@ export default {
       ocrDisplay: ref(null),
       ocrMarkdown: ref(null),
       confidence: ref(0),
+      copy: async (content) => {
+        const { toClipboard } = useClipboard();
+        await toClipboard(content);
+      },
     };
   },
   components: {
@@ -232,7 +237,6 @@ export default {
       let reader = new FileReader();
       reader.onload = (e) => {
         const imgBase64 = e.target.result;
-        let formData = new FormData();
         let inlineDelimiter = {
           $: ["$", "$"],
           "()": ["\\(", "\\)"],
@@ -242,11 +246,13 @@ export default {
           "[]": ["\\[", "\\]"],
           equation: ["\\begin{equation}", "\\end{equation}"],
         }[this.displayDelimiter];
-        formData.append("src", imgBase64);
-        formData.append("idiomatic_eqn_arrays", "true");
-        formData.append("formats", ["text", "latex_styled"]);
-        formData.append("math_inline_delimiter", inlineDelimiter);
-        formData.append("math_display_delimiter", displayDelimiter);
+        let data = {
+          src: imgBase64,
+          idiomatic_eqn_arrays: true,
+          formats: ["text", "latex_styled"],
+          math_inline_delimiters: inlineDelimiter,
+          math_display_delimiters: displayDelimiter,
+        };
         let options = {
           method: "POST",
           url: `/mathpixocr/v3/text`,
@@ -254,18 +260,16 @@ export default {
             "Content-Type": "application/json",
             app_id: this.ID,
             app_key: this.KY,
-            Accept: "application/json",
           },
-          data: formData,
+          data: JSON.stringify(data),
         };
         axios(options)
           .then((response) => {
-            this.message.success("识别成功");
             this.ocrLaTeX = response.data.latex_styled;
-            this.ocrInline = `${inlineDelimiter[0]}${response.data.text}${inlineDelimiter[1]}`;
-            this.ocrDisplay = `${displayDelimiter[0]}\n${response.data.text}\n${displayDelimiter[1]}`;
+            this.ocrInline = `${inlineDelimiter[0]}${response.data.latex_styled}${inlineDelimiter[1]}`;
+            this.ocrDisplay = `${displayDelimiter[0]}\n${response.data.latex_styled}\n${displayDelimiter[1]}`;
             this.ocrMarkdown = response.data.text;
-            this.this.confidence = response.data.confidence;
+            this.confidence = response.data.confidence * 100;
             return response.data;
           })
           .catch((error) => {
@@ -278,6 +282,15 @@ export default {
       this.globalState.insertContent = content
         .toString()
         .replace(/\n/g, "<br>");
+    },
+    copyToClipboard(content) {
+      this.copy(content)
+        .then(() => {
+          this.message.success("复制成功");
+        })
+        .catch(() => {
+          this.message.error("复制失败");
+        });
     },
   },
 };
