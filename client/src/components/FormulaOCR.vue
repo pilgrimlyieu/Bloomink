@@ -265,10 +265,12 @@ export default {
         };
         axios(options)
           .then((response) => {
-            this.ocrLaTeX = response.data.latex_styled;
-            this.ocrInline = `${inlineDelimiter[0]}${response.data.latex_styled}${inlineDelimiter[1]}`;
-            this.ocrDisplay = `${displayDelimiter[0]}\n${response.data.latex_styled}\n${displayDelimiter[1]}`;
-            this.ocrMarkdown = response.data.text;
+            if (response.data.latex_styled !== undefined) {
+              this.ocrLaTeX = response.data.latex_styled;
+              this.ocrInline = `${inlineDelimiter[0]}${response.data.latex_styled}${inlineDelimiter[1]}`;
+              this.ocrDisplay = `${displayDelimiter[0]}\n${response.data.latex_styled}\n${displayDelimiter[1]}`;
+            }
+            this.ocrMarkdown = response.data.text ?? "";
             this.confidence = response.data.confidence * 100;
             return response.data;
           })
