@@ -105,14 +105,14 @@ export default {
   setup() {
     const globalState = inject("globalState");
     const message = useMessage();
-    const apiKey = ref(localStorage.getItem("TextOCR_apiKey"));
-    const secretKey = ref(localStorage.getItem("TextOCR_secretKey"));
-    const accessToken = ref(localStorage.getItem("TextOCR_accessToken"));
+    const apiKey = ref(localStorage.getItem("TextOCR_apiKey") ?? "");
+    const secretKey = ref(localStorage.getItem("TextOCR_secretKey") ?? "");
+    const accessToken = ref(localStorage.getItem("TextOCR_accessToken") ?? "");
     const ocrType = ref(
       localStorage.getItem("TextOCR_ocrType") ?? "general_basic"
     );
     const confidence = ref(
-      parseFloat(localStorage.getItem("TextOCR_confidence")) ?? 0
+      parseFloat(localStorage.getItem("TextOCR_confidence") ?? 0)
     );
     const ocrResult = ref(localStorage.getItem("TextOCR_ocrResult") ?? "");
     const ocrTypes = [

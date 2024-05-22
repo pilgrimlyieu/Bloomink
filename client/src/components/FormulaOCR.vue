@@ -179,13 +179,13 @@ export default {
   setup() {
     const globalState = inject("globalState");
     const message = useMessage();
-    const appID = ref(localStorage.getItem("FormulaOCR_appID"));
-    const appKey = ref(localStorage.getItem("FormulaOCR_appKey"));
+    const appID = ref(localStorage.getItem("FormulaOCR_appID") ?? "");
+    const appKey = ref(localStorage.getItem("FormulaOCR_appKey") ?? "");
     const inlineDelimiter = ref(
-      parseInt(localStorage.getItem("FormulaOCR_inlineDelimiter")) ?? 0
+      parseInt(localStorage.getItem("FormulaOCR_inlineDelimiter") ?? 0)
     );
     const displayDelimiter = ref(
-      parseInt(localStorage.getItem("FormulaOCR_displayDelimiter")) ?? 0
+      parseInt(localStorage.getItem("FormulaOCR_displayDelimiter") ?? 0)
     );
     const inlineDelimiterList = [
       ["$", "$"],
@@ -224,7 +224,7 @@ export default {
       localStorage.getItem("FormulaOCR_ocrMarkdown") ?? ""
     );
     const confidence = ref(
-      parseFloat(localStorage.getItem("FormulaOCR_confidence")) ?? 0
+      parseFloat(localStorage.getItem("FormulaOCR_confidence") ?? 0)
     );
     watchEffect(() => {
       localStorage.setItem("FormulaOCR_appID", appID.value);
