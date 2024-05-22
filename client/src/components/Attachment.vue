@@ -78,7 +78,7 @@ export default {
             "https://raw.githubusercontent.com/xiaoyifang/goldendict-ng/3856e1e8e88b6272effaf9e8981e5bddbd92f9fe/icons/icon.svg",
           icon: BookSearch24Filled,
           extra:
-            '<span style="font-size: 6px"><br /> （需要安装 <a href="https://github.com/xiaoyifang/goldendict-ng/releases/latest" target="_blank" >GoldenDict-ng</a > 以打开 GoldenDict 应用）</span >',
+            '<span style="font-size: 6px"><br />（需要安装 <a href="https://github.com/xiaoyifang/goldendict-ng/releases/latest" target="_blank" >GoldenDict-ng</a > 以打开 GoldenDict 应用）</span >',
         },
       ],
     };

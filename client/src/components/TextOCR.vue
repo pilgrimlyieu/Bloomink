@@ -31,16 +31,18 @@
     />
   </KeepAlive>
 
-  <n-progress
-    type="line"
-    :percentage="confidence"
-    :indicator-placement="'inside'"
-    :stroke-width="10"
-    :status="'warning'"
-    style="margin: 2px 0"
-  >
-    置信度 {{ confidence.toFixed(2) }}%
-  </n-progress>
+  <KeepAlive>
+    <n-progress
+      type="line"
+      :percentage="confidence"
+      :indicator-placement="'inside'"
+      :stroke-width="10"
+      :status="'warning'"
+      style="margin: 2px 0"
+    >
+      置信度 {{ confidence.toFixed(2) }}%
+    </n-progress>
+  </KeepAlive>
 
   <n-button
     type="info"
@@ -55,7 +57,7 @@
     <n-drawer-content title="百度 OCR API 配置">
       API Key
       <n-input
-        v-model:value="AK"
+        v-model:value="apiKey"
         type="password"
         show-password-on="click"
         placeholder="API Key"
@@ -63,7 +65,7 @@
       />
       Secret Key
       <n-input
-        v-model:value="SK"
+        v-model:value="secretKey"
         type="password"
         show-password-on="click"
         placeholder="Secret Key"
@@ -71,7 +73,7 @@
       />
       Access Token
       <n-input
-        v-model:value="AT"
+        v-model:value="accessToken"
         type="password"
         show-password-on="click"
         placeholder="Access Token"
@@ -103,10 +105,16 @@ export default {
   setup() {
     const globalState = inject("globalState");
     const message = useMessage();
-    const AK = ref(localStorage.getItem("AK"));
-    const SK = ref(localStorage.getItem("SK"));
-    const AT = ref(localStorage.getItem("AT"));
-    const ocrType = ref(localStorage.getItem("ocrType") || "general_basic");
+    const apiKey = ref(localStorage.getItem("TextOCR_apiKey"));
+    const secretKey = ref(localStorage.getItem("TextOCR_secretKey"));
+    const accessToken = ref(localStorage.getItem("TextOCR_accessToken"));
+    const ocrType = ref(
+      localStorage.getItem("TextOCR_ocrType") ?? "general_basic"
+    );
+    const confidence = ref(
+      parseFloat(localStorage.getItem("TextOCR_confidence")) ?? 0
+    );
+    const ocrResult = ref(localStorage.getItem("TextOCR_ocrResult") ?? "");
     const ocrTypes = [
       { label: "通用文字识别（标准版）", value: "general_basic" },
       { label: "通用文字识别（高精度版）", value: "accurate_basic" },
@@ -114,10 +122,12 @@ export default {
       { label: "手写文字识别", value: "handwriting" },
     ];
     watchEffect(() => {
-      localStorage.setItem("AK", AK.value);
-      localStorage.setItem("SK", SK.value);
-      localStorage.setItem("AT", AT.value);
-      localStorage.setItem("ocrType", ocrType.value);
+      localStorage.setItem("TextOCR_apiKey", apiKey.value);
+      localStorage.setItem("TextOCR_secretKey", secretKey.value);
+      localStorage.setItem("TextOCR_accessToken", accessToken.value);
+      localStorage.setItem("TextOCR_ocrType", ocrType.value);
+      localStorage.setItem("TextOCR_confidence", confidence.value);
+      localStorage.setItem("TextOCR_ocrResult", ocrResult.value);
     });
     return {
       config: ref(false),
@@ -125,11 +135,11 @@ export default {
       ocrTypes,
       globalState,
       message,
-      AK,
-      SK,
-      AT,
-      confidence: ref(0),
-      ocrResult: ref(null),
+      apiKey,
+      secretKey,
+      accessToken,
+      confidence,
+      ocrResult,
     };
   },
   components: {
@@ -140,7 +150,7 @@ export default {
     identificationRecognize() {
       let options = {
         method: "POST",
-        url: `/baiduocr/oauth/2.0/token?client_id=${this.AK}&client_secret=${this.SK}&grant_type=client_credentials`,
+        url: `/baiduocr/oauth/2.0/token?client_id=${this.apiKey}&client_secret=${this.secretKey}&grant_type=client_credentials`,
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -149,8 +159,7 @@ export default {
       axios(options)
         .then((response) => {
           this.message.success("获取 Access Token 成功");
-          this.AT = response.data.access_token;
-          localStorage.setItem("AT", response.data.access_token);
+          this.accessToken = response.data.access_token;
           return response.data.access_token;
         })
         .catch((error) => {
@@ -165,13 +174,13 @@ export default {
         formData.append("image", imgBase64);
         formData.append(
           "access_token",
-          this.AT || this.identificationRecognize()
+          this.accessToken || this.identificationRecognize()
         );
         formData.append("paragraph", "true");
         formData.append("probability", "true");
         let options = {
           method: "POST",
-          url: `/baiduocr/rest/2.0/ocr/v1/${this.ocrType}?access_token=${this.AT}`,
+          url: `/baiduocr/rest/2.0/ocr/v1/${this.ocrType}?access_token=${this.accessToken}`,
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             Accept: "application/json",
