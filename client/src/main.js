@@ -8,7 +8,7 @@ const globalState = reactive({
   tagLimit: 1,
   tags: [],
   poetries: [],
-  insertContent: "",
+  insertContent: (content) => null,
   keys: [],
 });
 

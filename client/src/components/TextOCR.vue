@@ -223,9 +223,7 @@ export default {
       reader.readAsDataURL(file.file);
     },
     insertToEditor(content) {
-      this.globalState.insertContent = content
-        .toString()
-        .replace(/\n/g, "<br>");
+      this.globalState.insertContent(content.toString().replace(/\n/g, "<br>"));
     },
   },
 };

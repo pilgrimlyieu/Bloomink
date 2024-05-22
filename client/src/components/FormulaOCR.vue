@@ -211,19 +211,21 @@ export default {
     const ocrInline = ref(
       localStorage.getItem("FormulaOCR_ocrInline") ??
         (ocrLaTeX.value
-          ? `${inlineDelimiterList[0]}${ocrLaTeX.value}${inlineDelimiterList[1]}`
+          ? `${currentInlineDelimiter[0]}${ocrLaTeX.value}${currentInlineDelimiter[1]}`
           : "")
     );
     const ocrDisplay = ref(
       localStorage.getItem("FormulaOCR_ocrDisplay") ??
         (ocrLaTeX.value
-          ? `${displayDelimiterList[0]}\n${ocrLaTeX.value}\n${displayDelimiterList[1]}`
+          ? `${currentDisplayDelimiter[0]}\n${ocrLaTeX.value}\n${currentDisplayDelimiter[1]}`
           : "")
     );
     const ocrMarkdown = ref(
       localStorage.getItem("FormulaOCR_ocrMarkdown") ?? ""
     );
-
+    const confidence = ref(
+      parseFloat(localStorage.getItem("FormulaOCR_confidence")) ?? 0
+    );
     watchEffect(() => {
       localStorage.setItem("FormulaOCR_appID", appID.value);
       localStorage.setItem("FormulaOCR_appKey", appKey.value);
@@ -236,6 +238,7 @@ export default {
       localStorage.setItem("FormulaOCR_ocrInline", ocrInline.value);
       localStorage.setItem("FormulaOCR_ocrDisplay", ocrDisplay.value);
       localStorage.setItem("FormulaOCR_ocrMarkdown", ocrMarkdown.value);
+      localStorage.setItem("FormulaOCR_confidence", confidence.value);
     });
     return {
       config: ref(false),
@@ -253,7 +256,7 @@ export default {
       ocrInline,
       ocrDisplay,
       ocrMarkdown,
-      confidence: ref(0),
+      confidence,
       copy: async (content) => {
         const { toClipboard } = useClipboard();
         await toClipboard(content);
@@ -306,9 +309,7 @@ export default {
       reader.readAsDataURL(file.file);
     },
     insertToEditor(content) {
-      this.globalState.insertContent = content
-        .toString()
-        .replace(/\n/g, "<br>");
+      this.globalState.insertContent(content.toString().replace(/\n/g, "<br>"));
     },
     copyToClipboard(content) {
       this.copy(content)
