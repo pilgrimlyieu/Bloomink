@@ -137,9 +137,9 @@ export default {
       });
     },
     insertToEditor(content, poetryDetail) {
-      this.globalState.insertContent = `<blockquote>${this.t(
-        content
-      )}</blockquote>`;
+      this.globalState.insertContent(
+        `<blockquote>${this.t(content)}</blockquote>`
+      );
       poetryDetail.destroy();
     },
     specialTagType(id) {
