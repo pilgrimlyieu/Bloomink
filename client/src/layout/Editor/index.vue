@@ -61,6 +61,9 @@ onMounted(() => {
 globalState.insertContent = (content) => {
   vditor.value.insertValue(content);
 };
+globalState.getContent = () => {
+  return vditor.value.getValue();
+};
 </script>
 
 <style scoped></style>
