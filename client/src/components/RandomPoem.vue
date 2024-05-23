@@ -52,14 +52,21 @@
 </template>
 
 <script>
-import { inject } from "vue";
+import { inject, watchEffect } from "vue";
 
 export default {
   name: "RandomPoem",
   setup() {
     const globalState = inject("globalState");
+    const poemID = ref(
+      localStorage.getItem("RandomPoem_poemID") ??
+        Math.floor(Math.random() * globalState.poetries.length)
+    );
+    watchEffect(() => {
+      localStorage.setItem("RandomPoem_poemID", poemID.value);
+    });
     return {
-      poemID: ref(Math.floor(Math.random() * globalState.poetries.length)),
+      poemID,
       poetries: globalState.poetries,
     };
   },
