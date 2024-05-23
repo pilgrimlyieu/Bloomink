@@ -34,8 +34,8 @@ export default {
     return {
       globalState,
       modal: modal,
-      tags: computed(() => globalState.tags),
-      poetries: computed(() => globalState.poetries),
+      tags: globalState.tags,
+      poetries: globalState.poetries,
       dialogVisible: ref(false),
     };
   },
@@ -44,13 +44,13 @@ export default {
       return text.trim().replace(/\n{1,2}/g, "<br>");
     },
     getPoetryName(id) {
-      return this.poetries[id]?.name;
+      return this.poetries[parseInt(id)]?.name;
     },
     getPoetName(id) {
-      return this.poetries[id]?.poet.name;
+      return this.poetries[parseInt(id)]?.poet.name;
     },
     showPoetryDetail(id) {
-      const poetry = this.poetries[id];
+      const poetry = this.poetries[parseInt(id)];
       const poetryDetail = this.modal.create({
         preset: "card",
         title: `《${poetry.name}》${poetry.poet.name}`,

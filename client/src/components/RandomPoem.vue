@@ -58,11 +58,9 @@ export default {
   name: "RandomPoem",
   setup() {
     const globalState = inject("globalState");
-    const keys = Object.keys(globalState.poetries);
     return {
-      poemID: ref("71150"),
-      poetries: computed(() => globalState.poetries),
-      keys,
+      poemID: ref(Math.floor(Math.random() * globalState.poetries.length)),
+      poetries: globalState.poetries,
     };
   },
   methods: {
@@ -70,8 +68,7 @@ export default {
       return text.trim().replace(/\n{1,2}/g, "<br>");
     },
     chooseRandomPoem() {
-      this.poemID =
-        this.keys[Math.floor(Math.random() * this.keys.length)].toString();
+      this.poemID = Math.floor(Math.random() * this.poetries.length);
     },
     getPoetryName(id) {
       return this.poetries[id]?.name;
