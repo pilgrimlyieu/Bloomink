@@ -13,20 +13,20 @@ const globalState = reactive({
 
 const openDB = () => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open("myDatabase", 1);
+    const request = indexedDB.open("PoetriesDatabase", 1);
     request.onerror = (event) => reject("Failed to open DB");
     request.onsuccess = (event) => resolve(event.target.result);
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      db.createObjectStore("myData");
+      db.createObjectStore("PoetriesData");
     };
   });
 };
 
 const storeData = async (key, data) => {
   const db = await openDB();
-  const transaction = db.transaction("myData", "readwrite");
-  const store = transaction.objectStore("myData");
+  const transaction = db.transaction("PoetriesData", "readwrite");
+  const store = transaction.objectStore("PoetriesData");
   return new Promise((resolve, reject) => {
     const request = store.put(JSON.stringify(data), key);
     request.onerror = (event) => reject("Failed to store data");
@@ -36,8 +36,8 @@ const storeData = async (key, data) => {
 
 const getData = async (key) => {
   const db = await openDB();
-  const transaction = db.transaction("myData");
-  const store = transaction.objectStore("myData");
+  const transaction = db.transaction("PoetriesData");
+  const store = transaction.objectStore("PoetriesData");
   return new Promise((resolve, reject) => {
     const request = store.get(key);
     request.onerror = (event) => reject("Failed to get data");
