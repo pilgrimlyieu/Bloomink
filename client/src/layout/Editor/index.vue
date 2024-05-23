@@ -53,16 +53,17 @@ onMounted(() => {
     preview: {
       delay: 500,
     },
-    mode: "sv",
+    mode: "wysiwyg",
     placeholder: "开启文化传承之旅吧！",
   });
-  watchEffect(() => {
-    if (globalState.insertContent) {
-      vditor.value.insertValue(globalState.insertContent);
-      globalState.insertContent = "";
-    }
-  });
 });
+
+globalState.insertContent = (content) => {
+  vditor.value.insertValue(content);
+};
+globalState.getContent = () => {
+  return vditor.value.getValue();
+};
 </script>
 
 <style scoped></style>

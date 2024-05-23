@@ -52,26 +52,30 @@
 </template>
 
 <script>
-import { inject } from "vue";
+import { inject, watchEffect } from "vue";
 
 export default {
   name: "RandomPoem",
   setup() {
     const globalState = inject("globalState");
-    const keys = Object.keys(globalState.poetries);
+    const poemID = ref(
+      localStorage.getItem("RandomPoem_poemID") ??
+        Math.floor(Math.random() * globalState.poetries.length)
+    );
+    watchEffect(() => {
+      localStorage.setItem("RandomPoem_poemID", poemID.value);
+    });
     return {
-      poemID: ref("71150"),
-      poetries: computed(() => globalState.poetries),
-      keys,
+      poemID,
+      poetries: globalState.poetries,
     };
   },
   methods: {
     t(text) {
-      return text.replace(/\n{1,2}/g, "<br>");
+      return text.trim().replace(/\n{1,2}/g, "<br>");
     },
     chooseRandomPoem() {
-      this.poemID =
-        this.keys[Math.floor(Math.random() * this.keys.length)].toString();
+      this.poemID = Math.floor(Math.random() * this.poetries.length);
     },
     getPoetryName(id) {
       return this.poetries[id]?.name;

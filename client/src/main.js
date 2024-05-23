@@ -1,34 +1,74 @@
-import { VueElement, createApp, reactive } from "vue";
+import { createApp, reactive } from "vue";
 import App from "./App.vue";
 import axios from "axios";
 
 const app = createApp(App);
 
 const globalState = reactive({
-  tagLimit: 1,
   tags: [],
   poetries: [],
-  insertContent: "",
-  keys: [],
+  insertContent: (content) => null,
+  getContent: () => null,
 });
 
-if (globalState.tags.length === 0) {
-  let index = 0;
-  for (let i = 1; i <= globalState.tagLimit; i++) {
-    axios
-      .get(`/assets/tag/${String(i).padStart(3, "0")}.json`)
-      .then((response) => {
-        globalState.tags.push(response.data);
-        for (const poem of response.data.poems) {
-          if (!globalState.poetries[poem.id]) {
-            axios.get(`/assets/poetry/${poem.id}.json`).then((response) => {
-              globalState.keys[index++] = poem.id;
-              globalState.poetries[poem.id] = response.data;
-            });
-          }
-        }
-      });
-  }
+const openDB = () => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("PoetriesDatabase", 1);
+    request.onerror = (event) => reject("Failed to open DB");
+    request.onsuccess = (event) => resolve(event.target.result);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      db.createObjectStore("PoetriesData");
+    };
+  });
+};
+
+const storeData = async (key, data) => {
+  const db = await openDB();
+  const transaction = db.transaction("PoetriesData", "readwrite");
+  const store = transaction.objectStore("PoetriesData");
+  return new Promise((resolve, reject) => {
+    const request = store.put(JSON.stringify(data), key);
+    request.onerror = (event) => reject("Failed to store data");
+    request.onsuccess = (event) => resolve(event.target.result);
+  });
+};
+
+const getData = async (key) => {
+  const db = await openDB();
+  const transaction = db.transaction("PoetriesData");
+  const store = transaction.objectStore("PoetriesData");
+  return new Promise((resolve, reject) => {
+    const request = store.get(key);
+    request.onerror = (event) => reject("Failed to get data");
+    request.onsuccess = (event) => {
+      if (event.target.result) {
+        resolve(JSON.parse(event.target.result));
+      } else {
+        resolve(null);
+      }
+    };
+  });
+};
+
+const savedTags = await getData("tags");
+if (savedTags) {
+  globalState.tags = savedTags;
+} else {
+  axios.get("/assets/tags.json").then(async (response) => {
+    globalState.tags = response.data.tags;
+    await storeData("tags", globalState.tags);
+  });
+}
+
+const savedPoetries = await getData("poetries");
+if (savedPoetries) {
+  globalState.poetries = savedPoetries;
+} else {
+  axios.get("/assets/poetries.json").then(async (response) => {
+    globalState.poetries = response.data.poetries;
+    await storeData("poetries", globalState.poetries);
+  });
 }
 
 app.provide("globalState", globalState);
