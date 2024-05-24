@@ -1,40 +1,48 @@
 <template>
   <div class="attachment-container">
     <n-space justify="center" style="margin-bottom: 3px">
-      <n-button type="error" secondary round size="small" @click="config = true">配置阿里云 AI API</n-button></n-space>
+      <div class="tag ai-tag">{{ moduleType }}</div>
+      <n-button type="error" class="setting" secondary round size="small" @click="config = true">配置阿里云 AI API</n-button>
+      <div class="tag user-tag">{{ userName }}</div>
+    </n-space>
+    <n-divider />
     <div class="chat-record" ref="chatRecord">
-      <div v-for="(message, index) in messages" :key="index"
-        :class="message.sender === 'user' ? 'user-message' : 'ai-message'">
-        {{ message.content }}
+      <div v-for="(message, index) in messages" :key="index" class="message-wrapper"
+        :class="message.sender === 'user' ? 'user-wrapper' : 'ai-wrapper'">
+        <div :class="message.sender === 'user' ? 'user-message' : 'ai-message'">
+          {{ message.content }}
+        </div>
+      </div>
+      <div class="input-area">
+        <KeepAlive>
+          <n-input v-model:value="chatContent" type="textarea" :autosize="{ minRows: 6, maxRows: 8 }" placeholder="你想说啥"
+            style="margin: 10px 0" />
+        </KeepAlive>
+        <n-button @click="sendMessage" class="send-button" type="info">发送</n-button>
       </div>
     </div>
-    <KeepAlive>
-      <n-input v-model:value="chatContent" type="textarea" :autosize="{ minRows: 6, maxRows: 8 }" placeholder="识别结果"
-        style="margin: 10px 0" />
-    </KeepAlive>
-    <n-button @click="sendMessage" class="send-button" type="info">发送</n-button>
   </div>
 
-  <n-drawer v-model:show="config" :width="500" placement="right">
-    <n-drawer-content title="阿里云 AI API 配置">
-      API Key
-      <n-input v-model:value="AK" type="password" show-password-on="click" placeholder="API Key"
-        style="margin: 10px 0" />
-      Module Name
-      <n-input v-model:value="MN" type="text" placeholder="请输入你想调用的阿里云AI模型"
-        style="margin: 10px 0" />
-      User Name
-      <n-input v-model:value="UN" type="text" placeholder="给自己取个帅气的名字吧！"
-        style="margin: 10px 0" />
-      <template #password-visible-icon>
-        <n-icon :size="16" :component="GlassesOutline" />
-      </template>
-    </n-drawer-content>
-  </n-drawer>
+    <n-drawer v-model:show="config" :width="500" placement="right">
+      <n-drawer-content title="阿里云 AI API 配置">
+        API Key
+        <n-input v-model:value="apiKey" type="password" show-password-on="click" placeholder="API Key"
+          style="margin: 10px 0" />
+        <br />
+        Module Name
+        <n-select v-model:value="moduleType" :options="moduleTypes"> </n-select>
+        <br />
+        User Name
+        <n-input v-model:value="userName" type="text" placeholder="给自己取个帅气的名字吧！" style="margin: 10px 0" />
+        <template #password-visible-icon>
+          <n-icon :size="16" :component="GlassesOutline" />
+        </template>
+      </n-drawer-content>
+    </n-drawer>
 </template>
 
 <script>
-import { GlassesOutline, ArchiveOutline } from "@vicons/ionicons5";
+import { GlassesOutline } from "@vicons/ionicons5";
 import axios from 'axios';
 import { useMessage } from "naive-ui";
 import { ref } from 'vue';
@@ -43,20 +51,30 @@ export default {
   name: "Attachment",
   setup() {
     const message = useMessage();
-    const AK = ref(localStorage.getItem("AK"));
-    const MN = ref(localStorage.getItem("MN"));
-    const UN = ref(localStorage.getItem("UN"));
+    const apiKey = ref(localStorage.getItem("AI_apiKey") ?? "");
+    const userName = ref(localStorage.getItem("AI_userName") ?? "");
+    const moduleType = ref(
+      localStorage.getItem("AI_moduleType") ?? "qwen-turbo"
+    );
+    const moduleTypes = [
+      { label: "qwen-turbo", value: "qwen-turbo" },
+      { label: "qwen-plus", value: "qwen-plus" },
+      { label: "qwen-max", value: "qwen-max" },
+      { label: "qwen-max-longcontext", value: "qwen-max-longcontext" },
+    ];
     watchEffect(() => {
-      localStorage.setItem("AK", AK.value);
-      localStorage.setItem("MN", MN.value);
-      localStorage.setItem("UN", UN.value);
+      localStorage.setItem("AI_apiKey", apiKey.value);
+      localStorage.setItem("AI_userName", userName.value);
+      localStorage.setItem("AI_moduleType", moduleType.value);
     });
+
     return {
       config: ref(false),
       message,
-      AK,
-      MN,
-      UN,
+      apiKey,
+      userName,
+      moduleType,
+      moduleTypes
     };
   },
   data() {
@@ -71,8 +89,13 @@ export default {
   methods: {
     async sendMessage() {
       this.messages.push({ sender: 'user', content: this.chatContent });
-      const aiResponse = await this.callAiApi(this.chatContent);
-      this.messages.push({ sender: 'ai', content: aiResponse });
+      try {
+        this.callAiApi(this.chatContent).then((response) => {
+          this.messages.push({ sender: 'ai', content: response });
+        });
+      } catch (error) {
+        this.message.error('AI API 请求失败');
+      }
       this.chatContent = '';
       this.$nextTick(() => {
         this.$refs.chatRecord.scrollTop = this.$refs.chatRecord.scrollHeight;
@@ -84,10 +107,10 @@ export default {
         url: '/alitongyiai/api/v1/services/aigc/text-generation/generation',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.AK}`
+          'Authorization': `Bearer ${this.apiKey}`
         },
         data: JSON.stringify({
-          model: `${this.MN}`,
+          model: `${this.moduleType}`,
           input: {
             messages: [
               {
@@ -96,39 +119,88 @@ export default {
               }
             ]
           },
-          parameters: {
-            result_format: 'message'
-          }
         }),
       };
-      axios(options).then((response) => {
-        return response.output.choices[0].message.content;
-      }).catch((error) => {
-        return this.message.error('AI API 请求失败');
-      });
+
+      try {
+        const response = await axios(options);
+        return response.data.output.text;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     }
-  }
+  },
 };
 </script>
 
 <style scoped>
-.attachment-container {
-  /* ADD */
-  
+.attachment {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tag {
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+}
+
+.ai-tag {
+  background-color: rgb(64, 191, 115);
+  border: rgb(64, 191, 115);
+  color: white;
+  left: 0;
+}
+
+.user-tag {
+  background-color: rgb(0, 162, 255);
+  border: 1px solid rgb(0, 162, 255);
+  color: white;
+  right: 0;
 }
 
 .chat-record {
-  height: 300px;
-  /* 聊天记录框的高度 */
+  height: 590px; /* 聊天记录框的高度 */
   width: 100%;
   overflow-y: auto;
 }
 
+.message-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ai-wrapper {
+  justify-content: flex-start;
+}
+
 .user-message {
+  display: inline-block;
   text-align: right;
+  background-color: rgb(0, 162, 255);
+  border: 1px solid rgb(0, 162, 255);
+  border-radius: 5px;
+  color: white;
+  padding: 10px;
+  margin-bottom: 20px;
 }
 
 .ai-message {
+  display: inline-block;
   text-align: left;
+  background-color: rgb(64, 191, 115);
+  border: 1px solid rgb(64, 191, 115);
+  border-radius: 5px;
+  color: white;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.input-area {
+  position: sticky;
+  bottom: 0;
+  background-color: white;
 }
 </style>
