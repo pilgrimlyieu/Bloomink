@@ -27,7 +27,6 @@
       type="text"
       rows="1"
       placeholder="LaTeX"
-      disabled
       style="margin: 8px 0"
     />
   </KeepAlive>
@@ -54,7 +53,6 @@
       type="text"
       rows="1"
       placeholder="行内公式"
-      disabled
       style="margin: 8px 0"
     />
   </KeepAlive>
@@ -81,7 +79,6 @@
       type="text"
       rows="1"
       placeholder="行间公式"
-      disabled
       style="margin: 8px 0"
     />
   </KeepAlive>
@@ -108,7 +105,6 @@
       type="text"
       rows="1"
       placeholder="Mathpix Markdown"
-      disabled
       style="margin: 8px 0"
     />
   </KeepAlive>
@@ -144,7 +140,7 @@
     <n-drawer-content title="百度 OCR API 配置">
       App ID
       <n-input
-        v-model:value="ID"
+        v-model:value="appID"
         type="password"
         show-password-on="click"
         placeholder="App ID"
@@ -152,7 +148,7 @@
       />
       App Key
       <n-input
-        v-model:value="KY"
+        v-model:value="appKey"
         type="password"
         show-password-on="click"
         placeholder="App Key"
@@ -183,45 +179,84 @@ export default {
   setup() {
     const globalState = inject("globalState");
     const message = useMessage();
-    const ID = ref(localStorage.getItem("ID"));
-    const KY = ref(localStorage.getItem("KY"));
-    const inlineDelimiter = ref(localStorage.getItem("inlineDelimiter") || "$");
-    const displayDelimiter = ref(
-      localStorage.getItem("displayDelimiter") || "$$"
+    const appID = ref(localStorage.getItem("FormulaOCR_appID") ?? "");
+    const appKey = ref(localStorage.getItem("FormulaOCR_appKey") ?? "");
+    const inlineDelimiter = ref(
+      parseInt(localStorage.getItem("FormulaOCR_inlineDelimiter") ?? 0)
     );
-    const inlineDelimiters = [
-      { label: "$...$", value: "$" },
-      { label: "\\(...\\)", value: "()" },
+    const displayDelimiter = ref(
+      parseInt(localStorage.getItem("FormulaOCR_displayDelimiter") ?? 0)
+    );
+    const inlineDelimiterList = [
+      ["$", "$"],
+      ["\\(", "\\)"],
     ];
-    const displayDelimiters = [
-      { label: "$$ ... $$", value: "$$" },
-      { label: "\\[ ... \\]", value: "[]" },
-      {
-        label: "\\begin{equation} ... \\end{equation}",
-        value: "equation",
-      },
+    const displayDelimiterList = [
+      ["$$", "$$"],
+      ["\\[", "\\]"],
+      ["\\begin{equation}", "\\end{equation}"],
     ];
+    const inlineDelimiters = inlineDelimiterList.map((item, index) => ({
+      label: `${item[0]}...${item[1]}`,
+      value: index,
+    }));
+    const displayDelimiters = displayDelimiterList.map((item, index) => ({
+      label: `${item[0]} ... ${item[1]}`,
+      value: index,
+    }));
+    const currentInlineDelimiter = inlineDelimiterList[inlineDelimiter.value];
+    const currentDisplayDelimiter =
+      displayDelimiterList[displayDelimiter.value];
+    const ocrLaTeX = ref(localStorage.getItem("FormulaOCR_ocrLaTeX") ?? "");
+    const ocrInline = ref(
+      localStorage.getItem("FormulaOCR_ocrInline") ??
+        (ocrLaTeX.value
+          ? `${currentInlineDelimiter[0]}${ocrLaTeX.value}${currentInlineDelimiter[1]}`
+          : "")
+    );
+    const ocrDisplay = ref(
+      localStorage.getItem("FormulaOCR_ocrDisplay") ??
+        (ocrLaTeX.value
+          ? `${currentDisplayDelimiter[0]}\n${ocrLaTeX.value}\n${currentDisplayDelimiter[1]}`
+          : "")
+    );
+    const ocrMarkdown = ref(
+      localStorage.getItem("FormulaOCR_ocrMarkdown") ?? ""
+    );
+    const confidence = ref(
+      parseFloat(localStorage.getItem("FormulaOCR_confidence") ?? 0)
+    );
     watchEffect(() => {
-      localStorage.setItem("ID", ID.value);
-      localStorage.setItem("KY", KY.value);
-      localStorage.setItem("inlineDelimiter", inlineDelimiter.value);
-      localStorage.setItem("displayDelimiter", displayDelimiter.value);
+      localStorage.setItem("FormulaOCR_appID", appID.value);
+      localStorage.setItem("FormulaOCR_appKey", appKey.value);
+      localStorage.setItem("FormulaOCR_inlineDelimiter", inlineDelimiter.value);
+      localStorage.setItem(
+        "FormulaOCR_displayDelimiter",
+        displayDelimiter.value
+      );
+      localStorage.setItem("FormulaOCR_ocrLaTeX", ocrLaTeX.value);
+      localStorage.setItem("FormulaOCR_ocrInline", ocrInline.value);
+      localStorage.setItem("FormulaOCR_ocrDisplay", ocrDisplay.value);
+      localStorage.setItem("FormulaOCR_ocrMarkdown", ocrMarkdown.value);
+      localStorage.setItem("FormulaOCR_confidence", confidence.value);
     });
     return {
       config: ref(false),
       globalState,
       message,
-      ID,
-      KY,
+      appID,
+      appKey,
       inlineDelimiter,
       displayDelimiter,
       inlineDelimiters,
       displayDelimiters,
-      ocrLaTeX: ref(null),
-      ocrInline: ref(null),
-      ocrDisplay: ref(null),
-      ocrMarkdown: ref(null),
-      confidence: ref(0),
+      inlineDelimiterList,
+      displayDelimiterList,
+      ocrLaTeX,
+      ocrInline,
+      ocrDisplay,
+      ocrMarkdown,
+      confidence,
       copy: async (content) => {
         const { toClipboard } = useClipboard();
         await toClipboard(content);
@@ -237,15 +272,8 @@ export default {
       let reader = new FileReader();
       reader.onload = (e) => {
         const imgBase64 = e.target.result;
-        let inlineDelimiter = {
-          $: ["$", "$"],
-          "()": ["\\(", "\\)"],
-        }[this.inlineDelimiter];
-        let displayDelimiter = {
-          $$: ["$$", "$$"],
-          "[]": ["\\[", "\\]"],
-          equation: ["\\begin{equation}", "\\end{equation}"],
-        }[this.displayDelimiter];
+        let inlineDelimiter = this.inlineDelimiterList[this.inlineDelimiter];
+        let displayDelimiter = this.displayDelimiterList[this.displayDelimiter];
         let data = {
           src: imgBase64,
           idiomatic_eqn_arrays: true,
@@ -258,17 +286,19 @@ export default {
           url: `/mathpixocr/v3/text`,
           headers: {
             "Content-Type": "application/json",
-            app_id: this.ID,
-            app_key: this.KY,
+            app_id: this.appID,
+            app_key: this.appKey,
           },
           data: JSON.stringify(data),
         };
         axios(options)
           .then((response) => {
-            this.ocrLaTeX = response.data.latex_styled;
-            this.ocrInline = `${inlineDelimiter[0]}${response.data.latex_styled}${inlineDelimiter[1]}`;
-            this.ocrDisplay = `${displayDelimiter[0]}\n${response.data.latex_styled}\n${displayDelimiter[1]}`;
-            this.ocrMarkdown = response.data.text;
+            if (response.data.latex_styled !== undefined) {
+              this.ocrLaTeX = response.data.latex_styled;
+              this.ocrInline = `${inlineDelimiter[0]}${response.data.latex_styled}${inlineDelimiter[1]}`;
+              this.ocrDisplay = `${displayDelimiter[0]}\n${response.data.latex_styled}\n${displayDelimiter[1]}`;
+            }
+            this.ocrMarkdown = response.data.text ?? "";
             this.confidence = response.data.confidence * 100;
             return response.data;
           })
@@ -279,9 +309,7 @@ export default {
       reader.readAsDataURL(file.file);
     },
     insertToEditor(content) {
-      this.globalState.insertContent = content
-        .toString()
-        .replace(/\n/g, "<br>");
+      this.globalState.insertContent(content.toString().replace(/\n/g, "<br>"));
     },
     copyToClipboard(content) {
       this.copy(content)
