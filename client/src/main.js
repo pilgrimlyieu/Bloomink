@@ -51,25 +51,27 @@ const getData = async (key) => {
   });
 };
 
-const savedTags = await getData("tags");
-if (savedTags) {
-  globalState.tags = savedTags;
-} else {
-  axios.get("/assets/tags.json").then(async (response) => {
-    globalState.tags = response.data.tags;
-    await storeData("tags", globalState.tags);
-  });
-}
+(async () => {
+  const savedTags = await getData("tags");
+  if (savedTags) {
+    globalState.tags = savedTags;
+  } else {
+    axios.get("/assets/tags.json").then(async (response) => {
+      globalState.tags = response.data.tags;
+      await storeData("tags", globalState.tags);
+    });
+  }
 
-const savedPoetries = await getData("poetries");
-if (savedPoetries) {
-  globalState.poetries = savedPoetries;
-} else {
-  axios.get("/assets/poetries.json").then(async (response) => {
-    globalState.poetries = response.data.poetries;
-    await storeData("poetries", globalState.poetries);
-  });
-}
+  const savedPoetries = await getData("poetries");
+  if (savedPoetries) {
+    globalState.poetries = savedPoetries;
+  } else {
+    axios.get("/assets/poetries.json").then(async (response) => {
+      globalState.poetries = response.data.poetries;
+      await storeData("poetries", globalState.poetries);
+    });
+  }
+})();
 
 app.provide("globalState", globalState);
 app.mount("#app");
