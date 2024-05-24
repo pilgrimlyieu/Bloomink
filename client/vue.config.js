@@ -26,6 +26,14 @@ module.exports = defineConfig({
           "^/mathpixocr": "",
         },
       },
+      "/aliyunai": {
+        target: "https://dashscope.aliyuncs.com/api",
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          "^/aliyunai": "",
+        },
+      },
     },
   },
   configureWebpack: {
