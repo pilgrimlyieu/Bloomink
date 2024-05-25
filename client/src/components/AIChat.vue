@@ -105,7 +105,7 @@ export default {
     async callAiApi(message) {
       let options = {
         method: 'POST',
-        url: '/alitongyiai/api/v1/services/aigc/text-generation/generation',
+        url: '/aliyunapi/v1/services/aigc/text-generation/generation',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.apiKey}`
