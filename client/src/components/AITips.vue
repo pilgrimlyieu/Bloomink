@@ -5,7 +5,7 @@
     </n-space>
     <n-divider />
     <n-button @click="getAdvice" class="send-button" type="primary">来点建议！</n-button>
-    <div class="ai-response">{{ aiResponse }}</div>
+    <div class="ai-response" :class="{ 'error-response': aiResponseError }">{{ aiResponse }}</div>
   </div>
 
   <n-drawer v-model:show="config" :width="500" placement="right">
@@ -40,7 +40,7 @@ export default {
     const apiKey = ref(localStorage.getItem("AI_apiKey") ?? "");
     const userName = ref(localStorage.getItem("AI_userName") ?? "");
     const moduleType = ref(
-      localStorage.getItem("AI_moduleType") ?? "qwen-turbo"
+      localStorage.getItem("AITips_moduleType") ?? "qwen-turbo"
     );
     const moduleTypes = [
       { label: "qwen-turbo", value: "qwen-turbo" },
@@ -51,7 +51,7 @@ export default {
     watchEffect(() => {
       localStorage.setItem("AI_apiKey", apiKey.value);
       localStorage.setItem("AI_userName", userName.value);
-      localStorage.setItem("AI_moduleType", moduleType.value);
+      localStorage.setItem("AITips_moduleType", moduleType.value);
     });
     
     return { 
@@ -66,7 +66,8 @@ export default {
   },
   data() {
     return {
-      aiResponse: ''
+      aiResponse: '',
+      aiResponseError: false
     };
   },
   components: {
@@ -74,6 +75,7 @@ export default {
   },
   methods: {
     getAdvice() {
+      this.aiResponseError = false;
       this.aiResponse = '正在获取建议...';
       const editorContent = this.globalState.getContent();
       const advice = `这是我写的一段文本：\n\n${editorContent}\n\n请帮我总结一下写的内容,请务必真实地评价一下写的怎么样,再给点建议。`;
@@ -82,6 +84,7 @@ export default {
         this.aiResponse = response;
       }).catch((error) => {
         this.message.error('获取建议失败');
+        this.aiResponseError = true;
         this.aiResponse = '获取建议失败';
       });
     },
@@ -110,7 +113,6 @@ export default {
         const response = await axios(options);
         return response.data.output.text;
       } catch (error) {
-        console.error(error);
         throw error;
       }
     },
@@ -130,5 +132,10 @@ export default {
   border-radius: 5px;
   background-color: rgb(64, 191, 115);
   color: white;
+}
+
+.error-response {
+  border-color: rgb(199, 21, 21);
+  background-color: rgb(199, 21, 21);
 }
 </style>

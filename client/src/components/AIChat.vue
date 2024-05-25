@@ -9,7 +9,8 @@
     <div class="chat-record" ref="chatRecord">
       <div v-for="(message, index) in messages" :key="index" class="message-wrapper"
         :class="message.sender === 'user' ? 'user-wrapper' : 'ai-wrapper'">
-        <div :class="message.sender === 'user' ? 'user-message' : 'ai-message'">
+        <div
+          :class="[message.sender === 'user' ? 'user-message' : 'ai-message', message.status === 'error' ? 'error-message' : '']">
           {{ message.content }}
         </div>
       </div>
@@ -23,22 +24,22 @@
     </div>
   </div>
 
-    <n-drawer v-model:show="config" :width="500" placement="right">
-      <n-drawer-content title="阿里云 AI API 配置">
-        API Key
-        <n-input v-model:value="apiKey" type="password" show-password-on="click" placeholder="API Key"
-          style="margin: 10px 0" />
-        <br />
-        Module Name
-        <n-select v-model:value="moduleType" :options="moduleTypes"> </n-select>
-        <br />
-        User Name
-        <n-input v-model:value="userName" type="text" placeholder="给自己取个帅气的名字吧！" style="margin: 10px 0" />
-        <template #password-visible-icon>
-          <n-icon :size="16" :component="GlassesOutline" />
-        </template>
-      </n-drawer-content>
-    </n-drawer>
+  <n-drawer v-model:show="config" :width="500" placement="right">
+    <n-drawer-content title="阿里云 AI API 配置">
+      API Key
+      <n-input v-model:value="apiKey" type="password" show-password-on="click" placeholder="API Key"
+        style="margin: 10px 0" />
+      <br />
+      Module Name
+      <n-select v-model:value="moduleType" :options="moduleTypes"> </n-select>
+      <br />
+      User Name
+      <n-input v-model:value="userName" type="text" placeholder="给自己取个帅气的名字吧！" style="margin: 10px 0" />
+      <template #password-visible-icon>
+        <n-icon :size="16" :component="GlassesOutline" />
+      </template>
+    </n-drawer-content>
+  </n-drawer>
 </template>
 
 <script>
@@ -54,7 +55,7 @@ export default {
     const apiKey = ref(localStorage.getItem("AI_apiKey") ?? "");
     const userName = ref(localStorage.getItem("AI_userName") ?? "");
     const moduleType = ref(
-      localStorage.getItem("AI_moduleType") ?? "qwen-turbo"
+      localStorage.getItem("AIChat_moduleType") ?? "qwen-turbo"
     );
     const moduleTypes = [
       { label: "qwen-turbo", value: "qwen-turbo" },
@@ -65,7 +66,7 @@ export default {
     watchEffect(() => {
       localStorage.setItem("AI_apiKey", apiKey.value);
       localStorage.setItem("AI_userName", userName.value);
-      localStorage.setItem("AI_moduleType", moduleType.value);
+      localStorage.setItem("AIChat_moduleType", moduleType.value);
     });
 
     return {
@@ -89,18 +90,18 @@ export default {
   methods: {
     async sendMessage() {
       this.messages.push({ sender: 'user', content: this.chatContent });
-      try {
-        this.callAiApi(this.chatContent).then((response) => {
-          this.messages.push({ sender: 'ai', content: response });
-        });
-      } catch (error) {
+      this.callAiApi(this.chatContent).then((response) => {
+        this.messages.push({ sender: 'ai', content: response });
+      }).catch((error) => {
         this.message.error('AI API 请求失败');
-      }
+        this.messages.push({ sender: 'ai', content: '请求失败!', status: 'error' });
+      });
       this.chatContent = '';
       this.$nextTick(() => {
         this.$refs.chatRecord.scrollTop = this.$refs.chatRecord.scrollHeight;
       });
     },
+
     async callAiApi(message) {
       let options = {
         method: 'POST',
@@ -126,7 +127,6 @@ export default {
         const response = await axios(options);
         return response.data.output.text;
       } catch (error) {
-        console.error(error);
         throw error;
       }
     }
@@ -196,6 +196,11 @@ export default {
   color: white;
   padding: 10px;
   margin-bottom: 20px;
+}
+
+.error-message {
+  background-color: rgb(199, 21, 21);
+  border: 1px solid rgb(199, 21, 21);
 }
 
 .input-area {
