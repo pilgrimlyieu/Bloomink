@@ -5,6 +5,7 @@
     style="text-align: center"
   >
     <n-image class="attachment-image" :src="attachment.image" />
+    <br />
     <n-button text @click="() => openWebsite(attachment.url)">
       <template #icon>
         <n-icon>
@@ -53,7 +54,7 @@ export default {
           name: "中国国学网",
           url: "http://www.guoxue.com",
           image:
-            "https://pilgrimlyieu.github.io/daily/2024-01/12-Raizakura.jpg",
+            "https://p2.itc.cn/images01/20201116/3b90a535cbaa422f9c5b5c3b88c6f37e.png",
           icon: BookLetter24Filled,
           extra: "",
         },
@@ -100,7 +101,7 @@ export default {
 <style scoped>
 .attachment-image {
   height: 250px;
-  width: 250px;
+  width: 300px;
   margin: auto;
   overflow: hidden;
 }

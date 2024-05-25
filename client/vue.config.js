@@ -26,12 +26,12 @@ module.exports = defineConfig({
           "^/mathpixocr": "",
         },
       },
-      "/alitongyiai": {
-        target: "https://dashscope.aliyuncs.com",
+      "/aliyunai": {
+        target: "https://dashscope.aliyuncs.com/api",
         changeOrigin: true,
         secure: false,
         pathRewrite: {
-          "^/alitongyiai": "",
+          "^/aliyunai": "",
         },
       },
     },

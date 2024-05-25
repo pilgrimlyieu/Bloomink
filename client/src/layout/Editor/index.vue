@@ -5,7 +5,7 @@
 <script setup>
 import Vditor from "vditor";
 import "vditor/dist/index.css";
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref, inject } from "vue";
 
 const vditor = ref(null);
 const globalState = inject("globalState");
