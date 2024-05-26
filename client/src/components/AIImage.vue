@@ -140,8 +140,8 @@ export default {
     const imageModule = ref(
       localStorage.getItem("AIImage_imageModule") ?? "wanx-v1"
     );
-    const imagesStorage = JSON.parse(
-      localStorage.getItem("AIImage_imagesStorage") ?? "[]"
+    const imagesStorage = ref(
+      JSON.parse(localStorage.getItem("AIImage_imagesStorage") ?? "[]")
     );
     const imageStyles = [
       { label: "默认", value: "<auto>" },
