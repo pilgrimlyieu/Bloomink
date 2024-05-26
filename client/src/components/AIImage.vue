@@ -105,7 +105,7 @@
         style="margin: 10px 0"
       />
       <br />
-      文生图 Prompt 使用的模型
+      文生图 Prompt 使用模型
       <n-select v-model:value="textModule" :options="textModules"> </n-select>
       文生图模型
       <n-select v-model:value="imageModule" :options="imageModules"> </n-select>

@@ -1,24 +1,43 @@
 <template>
   <div class="attachment-container">
     <n-space justify="center" style="margin-bottom: 3px">
-      <n-button type="error" secondary round size="small" @click="config = true">配置阿里云 AI API</n-button>
+      <n-button type="error" secondary round size="small" @click="config = true"
+        >配置通义千问 API</n-button
+      >
     </n-space>
     <n-divider />
-    <n-button @click="getAdvice" class="send-button" type="primary">来点建议！</n-button>
-    <div class="ai-response" :class="{ 'error-response': aiResponseError }">{{ aiResponse }}</div>
+    <n-space
+      justify="center"
+      style="margin-bottom: 3px; justify-content: space-between"
+    >
+      <n-button @click="getAbstract" class="send-button" type="info" round
+        >给我摘要！</n-button
+      >
+      <n-button @click="getAdvice" class="send-button" type="primary" round
+        >来点建议！</n-button
+      >
+    </n-space>
+    <div v-if="aiAbstract" class="ai-abstract">
+      <span v-html="aiAbstract.replace(/\n+/g, '<br />')"></span>
+    </div>
+    <div v-if="aiAdvice" class="ai-advice">
+      <span v-html="aiAdvice.replace(/\n+/g, '<br />')"></span>
+    </div>
   </div>
 
   <n-drawer v-model:show="config" :width="500" placement="right">
-    <n-drawer-content title="阿里云 AI API 配置">
+    <n-drawer-content title="通义千问 API 配置">
       API Key
-      <n-input v-model:value="apiKey" type="password" show-password-on="click" placeholder="API Key"
-        style="margin: 10px 0" />
+      <n-input
+        v-model:value="apiKey"
+        type="password"
+        show-password-on="click"
+        placeholder="API Key"
+        style="margin: 10px 0"
+      />
       <br />
-      Module Name
+      模型
       <n-select v-model:value="moduleType" :options="moduleTypes"> </n-select>
-      <br />
-      User Name
-      <n-input v-model:value="userName" type="text" placeholder="给自己取个帅气的名字吧！" style="margin: 10px 0" />
       <template #password-visible-icon>
         <n-icon :size="16" :component="GlassesOutline" />
       </template>
@@ -28,17 +47,16 @@
 
 <script>
 import { GlassesOutline } from "@vicons/ionicons5";
-import { inject,ref } from "vue";
-import axios from 'axios';
+import { inject, ref } from "vue";
+import axios from "axios";
 import { useMessage } from "naive-ui";
 
 export default {
   name: "AITips",
   setup() {
-    const globalState = inject('globalState');
+    const globalState = inject("globalState");
     const message = useMessage();
     const apiKey = ref(localStorage.getItem("AI_apiKey") ?? "");
-    const userName = ref(localStorage.getItem("AI_userName") ?? "");
     const moduleType = ref(
       localStorage.getItem("AITips_moduleType") ?? "qwen-turbo"
     );
@@ -48,70 +66,77 @@ export default {
       { label: "qwen-max", value: "qwen-max" },
       { label: "qwen-max-longcontext", value: "qwen-max-longcontext" },
     ];
+    const aiAbstract = ref(localStorage.getItem("AITips_aiAbstract") ?? "");
+    const aiAdvice = ref(localStorage.getItem("AITips_aiAdvice") ?? "");
     watchEffect(() => {
       localStorage.setItem("AI_apiKey", apiKey.value);
-      localStorage.setItem("AI_userName", userName.value);
       localStorage.setItem("AITips_moduleType", moduleType.value);
+      localStorage.setItem("AITips_aiAbstract", aiAbstract.value);
+      localStorage.setItem("AITips_aiAdvice", aiAdvice.value);
     });
-    
-    return { 
+    return {
       config: ref(false),
       globalState,
       message,
       apiKey,
-      userName,
       moduleType,
-      moduleTypes
-    };
-  },
-  data() {
-    return {
-      aiResponse: '',
-      aiResponseError: false
+      moduleTypes,
+      aiAbstract,
+      aiAdvice,
     };
   },
   components: {
     GlassesOutline,
   },
   methods: {
-    getAdvice() {
-      this.aiResponseError = false;
-      this.aiResponse = '正在获取建议...';
+    getAbstract() {
+      this.aiAbstract = "正在获取摘要……";
       const editorContent = this.globalState.getContent();
-      const advice = `这是我写的一段文本：\n\n${editorContent}\n\n请帮我总结一下写的内容,请务必真实地评价一下写的怎么样,再给点建议。`;
+      const abstract = `请根据下面的文章，生成一个摘要：\n\n${editorContent}。不要返回多余的内容。`;
+      this.callAiApi(abstract)
+        .then((response) => {
+          this.aiAbstract = response;
+        })
+        .catch((error) => {
+          this.message.error("获取摘要失败");
+        });
+    },
+    getAdvice() {
+      this.aiAdvice = "正在获取建议……";
+      const editorContent = this.globalState.getContent();
+      const advice = `请根据下面我写的文章，为我提供一点建议：\n\n${editorContent}`;
 
-      this.callAiApi(advice).then((response) => {
-        this.aiResponse = response;
-      }).catch((error) => {
-        this.message.error('获取建议失败');
-        this.aiResponseError = true;
-        this.aiResponse = '获取建议失败';
-      });
+      this.callAiApi(advice)
+        .then((response) => {
+          this.aiAdvice = response;
+        })
+        .catch((error) => {
+          this.message.error("获取建议失败");
+        });
     },
     async callAiApi(advice) {
       let options = {
-        method: 'POST',
-        url: '/aliyunapi/v1/services/aigc/text-generation/generation',
+        method: "POST",
+        url: "/aliyunai/v1/services/aigc/text-generation/generation",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.apiKey}`,
         },
         data: JSON.stringify({
           model: `${this.moduleType}`,
           input: {
             messages: [
               {
-                role: 'user',
-                content: advice
-              }
-            ]
+                role: "user",
+                content: advice,
+              },
+            ],
           },
         }),
       };
-
       try {
         const response = await axios(options);
-        return response.data.output.text;
+        return response.data.output.text; // 虽然文档建议的是用 message，但是我懒得改了 qwq
       } catch (error) {
         throw error;
       }
@@ -121,21 +146,17 @@ export default {
 </script>
 
 <style scoped>
-.send-button {
-  width: 100%;
-}
-
-.ai-response {
+.ai-abstract {
   margin-top: 10px;
   padding: 10px;
-  border: 1px solid rgb(64, 191, 115);
   border-radius: 5px;
-  background-color: rgb(64, 191, 115);
-  color: white;
+  background-color: rgb(186, 233, 241);
 }
 
-.error-response {
-  border-color: rgb(199, 21, 21);
-  background-color: rgb(199, 21, 21);
+.ai-advice {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: rgb(185, 225, 172);
 }
 </style>
