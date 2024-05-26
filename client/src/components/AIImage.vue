@@ -7,23 +7,63 @@
 
   <n-carousel
     autoplay
-    centered-slides
-    draggable
+    direction="vertical"
+    mousewheel
+    dot-placement="right"
+    :space-between="10"
     style="
-      border-top: 2px solid rgba(106, 115, 125, 0.5);
-      border-bottom: 2px solid rgba(106, 115, 125, 0.5);
+      width: 100%;
+      height: 360px;
+      border-top: 2px solid rgba(106, 115, 125, 0.2);
+      border-bottom: 2px solid rgba(106, 115, 125, 0.2);
       margin: 10px 0;
     "
   >
-    <img
+    <n-image
       v-if="imagesStorage.length === 0"
-      class="generated-image"
+      object-fit="contain"
+      height="360px"
+      width="100%"
       key="basic-image"
-      src="https://pilgrimlyieu.github.io/daily/2024-01/12-Raizakura.jpg"
+      src="/assets/images/basic-1.png"
     />
-    <img
+    <n-image
+      v-if="imagesStorage.length === 0"
+      object-fit="contain"
+      height="360px"
+      width="100%"
+      key="basic-image"
+      src="/assets/images/basic-2.png"
+    />
+    <n-image
+      v-if="imagesStorage.length === 0"
+      object-fit="contain"
+      height="360px"
+      width="100%"
+      key="basic-image"
+      src="/assets/images/basic-3.png"
+    />
+    <n-image
+      v-if="imagesStorage.length === 0"
+      object-fit="contain"
+      height="360px"
+      width="100%"
+      key="basic-image"
+      src="/assets/images/basic-4.png"
+    />
+    <n-image
+      v-if="imagesStorage.length === 0"
+      object-fit="contain"
+      height="360px"
+      width="100%"
+      key="basic-image"
+      src="/assets/images/basic-5.png"
+    />
+    <n-image
       v-for="image in imagesStorage"
-      class="generated-image"
+      object-fit="contain"
+      height="360px"
+      width="100%"
       :key="updateKey"
       :src="image"
     />
@@ -65,7 +105,7 @@
         style="margin: 10px 0"
       />
       <br />
-      文生图 Prompt 使用的模型
+      文生图 Prompt 使用模型
       <n-select v-model:value="textModule" :options="textModules"> </n-select>
       文生图模型
       <n-select v-model:value="imageModule" :options="imageModules"> </n-select>
@@ -100,8 +140,8 @@ export default {
     const imageModule = ref(
       localStorage.getItem("AIImage_imageModule") ?? "wanx-v1"
     );
-    const imagesStorage = JSON.parse(
-      localStorage.getItem("AIImage_imagesStorage") ?? "[]"
+    const imagesStorage = ref(
+      JSON.parse(localStorage.getItem("AIImage_imagesStorage") ?? "[]")
     );
     const imageStyles = [
       { label: "默认", value: "<auto>" },
@@ -131,10 +171,6 @@ export default {
       localStorage.setItem("AI_apiKey", apiKey.value);
       localStorage.setItem("AIImage_textModule", textModule.value);
       localStorage.setItem("AIImage_imageModule", imageModule.value);
-      localStorage.setItem(
-        "AIImage_imagesStorage",
-        JSON.stringify(imagesStorage)
-      );
       localStorage.setItem("AIImage_imageStyle", imageStyle.value);
       localStorage.setItem("AIImage_imageSize", imageSize.value);
       localStorage.setItem("AIImage_imageNumber", imageNumber.value);
@@ -171,7 +207,7 @@ export default {
             {
               role: "system",
               content:
-                "你是一个通义万相-文本生成图片的提示词生成器。用户将 Markdown 格式的文章提供给你，请你根据文章的内容构思一幅题图。然后提供给用户可以输入到通义万相-文本生成图片模型的描述画面的不超过 500 字的提示词信息。提示词信息应当详细的描述画面的各个细节，同时直接返回纯文本信息。",
+                "你是一个通义万相-文本生成图片的提示词生成器。用户将 Markdown 格式的文章提供给你，请你根据文章的内容构思一幅题图。然后提供给用户可以输入到通义万相-文本生成图片模型的描述画面的不超过 500 字的提示词信息。提示词信息应当详细的描述画面的各个细节，同时直接返回纯文本格式的提示词，不要包含其它额外内容。",
             },
             {
               role: "user",
@@ -293,11 +329,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.generated-image {
-  width: 100%;
-  height: 360px;
-  object-fit: contain;
-}
-</style>
