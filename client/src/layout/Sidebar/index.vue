@@ -42,19 +42,7 @@
 
 <script>
 import { defineComponent, h, ref } from "vue";
-import { NIcon } from "naive-ui";
-import { Library } from "@vicons/ionicons5";
-import { Magnify } from "@vicons/carbon";
-import { Robot } from "@vicons/fa";
-import {
-  MathFormula16Regular,
-  ScanText24Regular,
-  Image24Regular,
-  Attach12Regular,
-  CalendarRtl28Regular,
-} from "@vicons/fluent";
-import { MessageCircle } from "@vicons/tabler";
-import { TipsAndUpdatesOutlined } from "@vicons/material";
+import { useModal, NIcon, NButton, NLayout } from "naive-ui";
 import {
   AIChat,
   AIImage,
@@ -66,72 +54,98 @@ import {
   TextOCR,
 } from "@/components";
 
-function renderIcon(icon) {
-  return () => h(NIcon, null, { default: () => h(icon) });
+function renderIcon(iconName) {
+  return () =>
+    h(NIcon, null, {
+      default: () =>
+        h("img", { src: `/assets/icons/${iconName}.svg`, alt: iconName }),
+    });
 }
 
 const sidebarWidth = "33vw";
 
-const menuOptions = [
-  {
-    label: "文化库",
-    key: "culture-library",
-    icon: renderIcon(Library),
-  },
-  {
-    label: "资料库",
-    key: "attachment-library",
-    icon: renderIcon(Attach12Regular),
-  },
-  {
-    label: "AI",
-    key: "ai",
-    icon: renderIcon(Robot),
-    children: [
-      {
-        label: "聊天",
-        key: "chat-ai",
-        icon: renderIcon(MessageCircle),
-      },
-      {
-        label: "建议",
-        key: "tips-ai",
-        icon: renderIcon(TipsAndUpdatesOutlined),
-      },
-      {
-        label: "图片",
-        key: "image-ai",
-        icon: renderIcon(Image24Regular),
-      },
-    ],
-  },
-  {
-    label: "OCR",
-    key: "ocr",
-    icon: renderIcon(Magnify),
-    children: [
-      {
-        label: "文本",
-        key: "text-ocr",
-        icon: renderIcon(ScanText24Regular),
-      },
-      {
-        label: "公式",
-        key: "formula-ocr",
-        icon: renderIcon(MathFormula16Regular),
-      },
-    ],
-  },
-  {
-    label: "每诗",
-    key: "daily-poem",
-    icon: renderIcon(CalendarRtl28Regular),
-  },
-];
-
 export default defineComponent({
   name: "Sidebar",
   setup() {
+    const modal = useModal();
+    const menuOptions = [
+      {
+        label: "文化库",
+        key: "culture-library",
+        icon: renderIcon("Library"),
+      },
+      {
+        label: "资料库",
+        key: "attachment-library",
+        icon: renderIcon("Attach12Regular"),
+      },
+      {
+        label: "AI",
+        key: "ai",
+        icon: renderIcon("Robot"),
+        children: [
+          {
+            label: "聊天",
+            key: "chat-ai",
+            icon: renderIcon("MessageCircle"),
+          },
+          {
+            label: "建议",
+            key: "tips-ai",
+            icon: renderIcon("TipsAndUpdatesOutlined"),
+          },
+          {
+            label: "图片",
+            key: "image-ai",
+            icon: renderIcon("Image24Regular"),
+          },
+        ],
+      },
+      {
+        label: "OCR",
+        key: "ocr",
+        icon: renderIcon("Magnify"),
+        children: [
+          {
+            label: "文本",
+            key: "text-ocr",
+            icon: renderIcon("ScanText24Regular"),
+          },
+          {
+            label: "公式",
+            key: "formula-ocr",
+            icon: renderIcon("MathFormula16Regular"),
+          },
+        ],
+      },
+      {
+        label: "每诗",
+        key: "daily-poem",
+        icon: renderIcon("CalendarRtl28Regular"),
+      },
+      {
+        label: "游戏",
+        key: "game",
+        icon: renderIcon("GameController"),
+        children: [
+          {
+            label: "猜词",
+            key: "guess-word",
+            icon: renderIcon("Drafts24Filled"),
+          },
+          {
+            label: "汉兜",
+            key: "handle",
+            icon: renderIcon("Handle"),
+          },
+          {
+            label: "成语",
+            key: "idiom-wordle",
+            icon: renderIcon("MdBookmarks"),
+          },
+        ],
+      },
+    ];
     const components = {
       "culture-library": CultureLibrary,
       "attachment-library": Attachment,
@@ -142,17 +156,45 @@ export default defineComponent({
       "formula-ocr": FormulaOCR,
       "daily-poem": RandomPoem,
     };
-    const activeKey = ref("culture-library");
+    const activeKey = ref("tips-ai");
     const activeComponent = ref(components[activeKey.value]);
     const activateComponent = (key) => {
-      activeComponent.value = components[key];
+      const games = {
+        "guess-word": "https://caici.vercel.app/#/?topic=shici5",
+        handle: "https://handle.antfu.me",
+        "idiom-wordle": "https://cheeaun.github.io/chengyu-wordle",
+      };
+      if (key in games) {
+        modal.create({
+          preset: "card",
+          title: "",
+          style: {
+            width: "1200px",
+            height: "720px",
+            overflow: "hidden", // 解决滚动穿透问题
+          },
+          content: h("iframe", {
+            src: games[key],
+            width: "1408px",
+            height: "791px",
+            style: {
+              transform: "scale(0.8)",
+              transformOrigin: "0 0",
+            },
+            frameborder: "no",
+          }),
+        });
+      } else {
+        activeComponent.value = components[key];
+      }
     };
     return {
+      modal,
       sidebarWidth,
       activeComponent,
       activeKey,
       activateComponent,
-      collapsed: ref(false), // TODO: 发布时改为 true
+      collapsed: ref(true), // TODO: 发布时改为 true
       defaultExpandAll: ref(true),
       menuOptions,
     };
