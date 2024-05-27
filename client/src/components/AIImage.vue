@@ -25,7 +25,7 @@
       height="360px"
       width="100%"
       key="basic-image"
-      src="/assets/images/basic-1.png"
+      src="/assets/images/basic-1.jpg"
     />
     <n-image
       v-if="imagesStorage.length === 0"
@@ -33,7 +33,7 @@
       height="360px"
       width="100%"
       key="basic-image"
-      src="/assets/images/basic-2.png"
+      src="/assets/images/basic-2.jpg"
     />
     <n-image
       v-if="imagesStorage.length === 0"
@@ -41,7 +41,7 @@
       height="360px"
       width="100%"
       key="basic-image"
-      src="/assets/images/basic-3.png"
+      src="/assets/images/basic-3.jpg"
     />
     <n-image
       v-if="imagesStorage.length === 0"
@@ -49,7 +49,7 @@
       height="360px"
       width="100%"
       key="basic-image"
-      src="/assets/images/basic-4.png"
+      src="/assets/images/basic-4.jpg"
     />
     <n-image
       v-if="imagesStorage.length === 0"
@@ -57,7 +57,7 @@
       height="360px"
       width="100%"
       key="basic-image"
-      src="/assets/images/basic-5.png"
+      src="/assets/images/basic-5.jpg"
     />
     <n-image
       v-for="image in imagesStorage"
