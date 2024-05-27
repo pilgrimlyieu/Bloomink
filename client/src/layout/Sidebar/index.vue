@@ -43,18 +43,6 @@
 <script>
 import { defineComponent, h, ref } from "vue";
 import { NIcon } from "naive-ui";
-import { Library } from "@vicons/ionicons5";
-import { Magnify } from "@vicons/carbon";
-import { Robot } from "@vicons/fa";
-import {
-  MathFormula16Regular,
-  ScanText24Regular,
-  Image24Regular,
-  Attach12Regular,
-  CalendarRtl28Regular,
-} from "@vicons/fluent";
-import { MessageCircle } from "@vicons/tabler";
-import { TipsAndUpdatesOutlined } from "@vicons/material";
 import {
   AIChat,
   AIImage,
@@ -66,8 +54,12 @@ import {
   TextOCR,
 } from "@/components";
 
-function renderIcon(icon) {
-  return () => h(NIcon, null, { default: () => h(icon) });
+function renderIcon(iconName) {
+  return () =>
+    h(NIcon, null, {
+      default: () =>
+        h("img", { src: `/assets/icons/${iconName}.svg`, alt: iconName }),
+    });
 }
 
 const sidebarWidth = "33vw";
@@ -76,56 +68,56 @@ const menuOptions = [
   {
     label: "文化库",
     key: "culture-library",
-    icon: renderIcon(Library),
+    icon: renderIcon("Library"),
   },
   {
     label: "资料库",
     key: "attachment-library",
-    icon: renderIcon(Attach12Regular),
+    icon: renderIcon("Attach12Regular"),
   },
   {
     label: "AI",
     key: "ai",
-    icon: renderIcon(Robot),
+    icon: renderIcon("Robot"),
     children: [
       {
         label: "聊天",
         key: "chat-ai",
-        icon: renderIcon(MessageCircle),
+        icon: renderIcon("MessageCircle"),
       },
       {
         label: "建议",
         key: "tips-ai",
-        icon: renderIcon(TipsAndUpdatesOutlined),
+        icon: renderIcon("TipsAndUpdatesOutlined"),
       },
       {
         label: "图片",
         key: "image-ai",
-        icon: renderIcon(Image24Regular),
+        icon: renderIcon("Image24Regular"),
       },
     ],
   },
   {
     label: "OCR",
     key: "ocr",
-    icon: renderIcon(Magnify),
+    icon: renderIcon("Magnify"),
     children: [
       {
         label: "文本",
         key: "text-ocr",
-        icon: renderIcon(ScanText24Regular),
+        icon: renderIcon("ScanText24Regular"),
       },
       {
         label: "公式",
         key: "formula-ocr",
-        icon: renderIcon(MathFormula16Regular),
+        icon: renderIcon("MathFormula16Regular"),
       },
     ],
   },
   {
     label: "每诗",
     key: "daily-poem",
-    icon: renderIcon(CalendarRtl28Regular),
+    icon: renderIcon("CalendarRtl28Regular"),
   },
 ];
 
@@ -142,7 +134,7 @@ export default defineComponent({
       "formula-ocr": FormulaOCR,
       "daily-poem": RandomPoem,
     };
-    const activeKey = ref("culture-library");
+    const activeKey = ref("tips-ai");
     const activeComponent = ref(components[activeKey.value]);
     const activateComponent = (key) => {
       activeComponent.value = components[key];
@@ -152,7 +144,7 @@ export default defineComponent({
       activeComponent,
       activeKey,
       activateComponent,
-      collapsed: ref(false), // TODO: 发布时改为 true
+      collapsed: ref(true), // TODO: 发布时改为 true
       defaultExpandAll: ref(true),
       menuOptions,
     };

@@ -39,14 +39,15 @@
       模型
       <n-select v-model:value="moduleType" :options="moduleTypes"> </n-select>
       <template #password-visible-icon>
-        <n-icon :size="16" :component="GlassesOutline" />
+        <n-icon :size="16">
+          <img src="/assets/icons/GlassesOutline.svg" alt="GlassesOutline" />
+        </n-icon>
       </template>
     </n-drawer-content>
   </n-drawer>
 </template>
 
 <script>
-import { GlassesOutline } from "@vicons/ionicons5";
 import { inject, ref } from "vue";
 import axios from "axios";
 import { useMessage } from "naive-ui";
@@ -84,9 +85,6 @@ export default {
       aiAbstract,
       aiAdvice,
     };
-  },
-  components: {
-    GlassesOutline,
   },
   methods: {
     getAbstract() {

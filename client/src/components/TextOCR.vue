@@ -9,7 +9,7 @@
       <n-upload-dragger>
         <div style="margin-bottom: 12px">
           <n-icon size="48" :depth="3">
-            <ArchiveOutline />
+            <img src="/assets/icons/ArchiveOutline.svg" alt="ArchiveOutline" />
           </n-icon>
         </div>
         <n-text style="font-size: 16px">
@@ -89,14 +89,15 @@
       OCR 类型
       <n-select v-model:value="ocrType" :options="ocrTypes"> </n-select>
       <template #password-visible-icon>
-        <n-icon :size="16" :component="GlassesOutline" />
+        <n-icon :size="16">
+          <img src="/assets/icons/GlassesOutline.svg" alt="GlassesOutline" />
+        </n-icon>
       </template>
     </n-drawer-content>
   </n-drawer>
 </template>
 
 <script>
-import { GlassesOutline, ArchiveOutline } from "@vicons/ionicons5";
 import { inject, ref } from "vue";
 import axios from "axios";
 
@@ -141,10 +142,6 @@ export default {
       confidence,
       ocrResult,
     };
-  },
-  components: {
-    GlassesOutline,
-    ArchiveOutline,
   },
   methods: {
     identificationRecognize() {

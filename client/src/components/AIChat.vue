@@ -73,14 +73,15 @@
         style="margin: 10px 0"
       />
       <template #password-visible-icon>
-        <n-icon :size="16" :component="GlassesOutline" />
+        <n-icon :size="16">
+          <img src="/assets/icons/GlassesOutline.svg" alt="GlassesOutline" />
+        </n-icon>
       </template>
     </n-drawer-content>
   </n-drawer>
 </template>
 
 <script>
-import { GlassesOutline } from "@vicons/ionicons5";
 import axios from "axios";
 import { useMessage } from "naive-ui";
 import { ref } from "vue";
@@ -134,9 +135,6 @@ export default {
     filterMessages() {
       return this.messages.filter((message) => message.role !== "system");
     },
-  },
-  components: {
-    GlassesOutline,
   },
   methods: {
     async sendMessage() {
