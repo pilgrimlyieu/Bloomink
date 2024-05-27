@@ -36,7 +36,15 @@ export default {
           extra: "",
         },
         {
-          name: "书阁",
+          name: "中国哲学书电子化计划",
+          url: "http://ctext.org/zhs",
+          image:
+            "https://puui.qpic.cn/vpic_cover/q30460m360t/q30460m360t_hz.jpg",
+          icon: "Library",
+          extra: "",
+        },
+        {
+          name: "书格",
           url: "https://www.shuge.org",
           image:
             "https://www.shuge.org/wp-content/uploads/2024/05/tianhouanlan.jpg",
