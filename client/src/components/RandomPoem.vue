@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     t(text) {
-      return text.trim().replace(/\n{1,2}/g, "<br>");
+      return text.replace(/\n{1,2}/g, "<br>");
     },
     chooseRandomPoem() {
       this.poemID = Math.floor(Math.random() * this.poetries.length);

@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     t(text) {
-      return text.trim().replace(/\n{1,2}/g, "<br>");
+      return text.replace(/\n{1,2}/g, "<br>");
     },
     getPoetryName(id) {
       return this.poetries[parseInt(id)]?.name;
