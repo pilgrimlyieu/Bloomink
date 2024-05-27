@@ -1,3 +1,3 @@
 pushd "$elproject_path/client" > /dev/null
-vue serve
+npm run dev
 popd > /dev/null
