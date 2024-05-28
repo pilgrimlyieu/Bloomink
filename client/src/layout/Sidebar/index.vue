@@ -129,11 +129,6 @@ export default defineComponent({
         icon: renderIcon("GameController"),
         children: [
           {
-            label: "猜词",
-            key: "guess-word",
-            icon: renderIcon("Drafts24Filled"),
-          },
-          {
             label: "汉兜",
             key: "handle",
             icon: renderIcon("Handle"),
@@ -142,6 +137,11 @@ export default defineComponent({
             label: "成语",
             key: "idiom-wordle",
             icon: renderIcon("MdBookmarks"),
+          },
+          {
+            label: "猜词",
+            key: "guess-word",
+            icon: renderIcon("Drafts24Filled"),
           },
         ],
       },
@@ -160,9 +160,9 @@ export default defineComponent({
     const activeComponent = ref(components[activeKey.value]);
     const activateComponent = (key) => {
       const games = {
-        "guess-word": "https://caici.vercel.app/#/?topic=shici5",
         handle: "https://handle.antfu.me",
         "idiom-wordle": "https://cheeaun.github.io/chengyu-wordle",
+        "guess-word": "https://caici.vercel.app/#/?topic=shici5",
       };
       if (key in games) {
         modal.create({
