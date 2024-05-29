@@ -1,23 +1,25 @@
 <template>
   <n-modal-provider>
     <n-message-provider>
-      <div id="app">
+      <Header class="header" />
+      <div class="content">
         <Sidebar class="sidebar" />
-        <n-space></n-space>
-        <Editor class="editor" /></div
-    ></n-message-provider>
+        <Editor class="editor" />
+      </div>
+    </n-message-provider>
   </n-modal-provider>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import { Sidebar, Editor } from "./layout";
+import { Sidebar, Editor, Header } from "./layout";
 
 export default defineComponent({
   name: "App",
   components: {
     Sidebar,
     Editor,
+    Header,
   },
 });
 </script>
@@ -25,6 +27,7 @@ export default defineComponent({
 <style>
 #app {
   display: flex;
+  flex-direction: column;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -47,6 +50,13 @@ body::before {
   bottom: 0;
   left: 0;
   background-color: rgba(255, 255, 255, 0.5);
+}
+
+.header {
+}
+
+.content {
+  display: flex;
 }
 
 .sidebar {
