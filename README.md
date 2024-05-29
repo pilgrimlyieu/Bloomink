@@ -26,6 +26,10 @@
 
 我们的图标是一朵鲜艳多彩的鲜花，象征着我们希望用户在创作中百花齐放，绽放无限灵感。
 
+## 调试运行
+
+在 `client` 目录运行 `npm i` 安装所需包，然后运行 `npm run dev` 命令，在本地进行调试运行。
+
 ## 项目结构
 
 ```tree
@@ -38,7 +42,6 @@
 │  ├──  reconstructPoetries.py
 │  └──  reconstructTags.py
 ├──  client                      # 项目主体部分，存放前端全部内容
-│  ├──  dist                     # 项目构建成品
 │  ├──  public                   # 存放 Web 应用图标及应用资产，如图标、图片、数据等
 │  │  ├──  assets
 │  │  │  ├──  icons
