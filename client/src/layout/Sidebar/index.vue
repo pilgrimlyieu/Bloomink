@@ -156,7 +156,7 @@ export default defineComponent({
       "formula-ocr": FormulaOCR,
       "daily-poem": RandomPoem,
     };
-    const activeKey = ref("tips-ai");
+    const activeKey = ref("chat-ai");
     const activeComponent = ref(components[activeKey.value]);
     const activateComponent = (key) => {
       const games = {
@@ -173,16 +173,17 @@ export default defineComponent({
             height: "720px",
             overflow: "hidden", // 解决滚动穿透问题
           },
-          content: h("iframe", {
-            src: games[key],
-            width: "1408px",
-            height: "791px",
-            style: {
-              transform: "scale(0.8)",
-              transformOrigin: "0 0",
-            },
-            frameborder: "no",
-          }),
+          content: () =>
+            h("iframe", {
+              src: games[key],
+              width: "1408px",
+              height: "791px",
+              style: {
+                transform: "scale(0.8)",
+                transformOrigin: "0 0",
+              },
+              frameborder: "no",
+            }),
         });
       } else {
         activeComponent.value = components[key];
@@ -194,7 +195,7 @@ export default defineComponent({
       activeComponent,
       activeKey,
       activateComponent,
-      collapsed: ref(true), // TODO: 发布时改为 true
+      collapsed: ref(true),
       defaultExpandAll: ref(true),
       menuOptions,
     };
