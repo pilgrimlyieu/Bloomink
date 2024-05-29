@@ -1,11 +1,2 @@
-.venv/
 private.tex
 **/doc/**/out
-
-######################
-# Python
-######################
-*.pyc
-*.pyo
-*.pyd
-__pycache__/
