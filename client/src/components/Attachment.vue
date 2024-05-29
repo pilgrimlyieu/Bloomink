@@ -44,6 +44,14 @@ export default {
           extra: "",
         },
         {
+          name: "中华古籍资源库",
+          url: "http://read.nlc.cn/thematDataSearch/toGujiIndex",
+          image:
+            "http://read.nlc.cn/static/style/css/images/New_ymhGJG_banner00.jpg",
+          icon: "Library",
+          extra: "",
+        },
+        {
           name: "书格",
           url: "https://www.shuge.org",
           image:

@@ -129,11 +129,6 @@ export default defineComponent({
         icon: renderIcon("GameController"),
         children: [
           {
-            label: "猜词",
-            key: "guess-word",
-            icon: renderIcon("Drafts24Filled"),
-          },
-          {
             label: "汉兜",
             key: "handle",
             icon: renderIcon("Handle"),
@@ -142,6 +137,11 @@ export default defineComponent({
             label: "成语",
             key: "idiom-wordle",
             icon: renderIcon("MdBookmarks"),
+          },
+          {
+            label: "猜词",
+            key: "guess-word",
+            icon: renderIcon("Drafts24Filled"),
           },
         ],
       },
@@ -156,13 +156,13 @@ export default defineComponent({
       "formula-ocr": FormulaOCR,
       "daily-poem": RandomPoem,
     };
-    const activeKey = ref("tips-ai");
+    const activeKey = ref("chat-ai");
     const activeComponent = ref(components[activeKey.value]);
     const activateComponent = (key) => {
       const games = {
-        "guess-word": "https://caici.vercel.app/#/?topic=shici5",
         handle: "https://handle.antfu.me",
         "idiom-wordle": "https://cheeaun.github.io/chengyu-wordle",
+        "guess-word": "https://caici.vercel.app/#/?topic=shici5",
       };
       if (key in games) {
         modal.create({
@@ -173,16 +173,17 @@ export default defineComponent({
             height: "720px",
             overflow: "hidden", // 解决滚动穿透问题
           },
-          content: h("iframe", {
-            src: games[key],
-            width: "1408px",
-            height: "791px",
-            style: {
-              transform: "scale(0.8)",
-              transformOrigin: "0 0",
-            },
-            frameborder: "no",
-          }),
+          content: () =>
+            h("iframe", {
+              src: games[key],
+              width: "1408px",
+              height: "791px",
+              style: {
+                transform: "scale(0.8)",
+                transformOrigin: "0 0",
+              },
+              frameborder: "no",
+            }),
         });
       } else {
         activeComponent.value = components[key];
@@ -194,7 +195,7 @@ export default defineComponent({
       activeComponent,
       activeKey,
       activateComponent,
-      collapsed: ref(true), // TODO: 发布时改为 true
+      collapsed: ref(true),
       defaultExpandAll: ref(true),
       menuOptions,
     };
