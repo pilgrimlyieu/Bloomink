@@ -90,13 +90,14 @@ export default {
     getAbstract() {
       this.aiAbstract = "正在获取摘要……";
       const editorContent = this.globalState.getContent();
-      const abstract = `请根据下面的文章，生成一个摘要：\n\n${editorContent}。不要返回多余的内容。`;
+      const abstract = `请根据下面的文章，生成一个摘要，不要返回多余的内容：\n\n${editorContent}`;
       this.callAiApi(abstract)
         .then((response) => {
           this.aiAbstract = response;
         })
         .catch((error) => {
           this.message.error("获取摘要失败");
+          this.aiAbstract = "";
         });
     },
     getAdvice() {
@@ -110,6 +111,7 @@ export default {
         })
         .catch((error) => {
           this.message.error("获取建议失败");
+          this.aiAdvice = "";
         });
     },
     async callAiApi(advice) {
