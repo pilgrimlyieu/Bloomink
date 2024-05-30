@@ -23,7 +23,13 @@
 \date{\today}
 \author{撰写人：\wo}
 
-\input{private.tex}
+\def\PUBLICVERSION{}
+
+\ifdefined\PUBLICVERSION
+    \input{public.tex}
+\else
+    \input{private.tex}
+\fi
 
 \begin{document}
 
@@ -127,11 +133,11 @@
 
 \begin{enumerate}
     \item \textbf{\texttt{main}}：主分支，用于发布版本
-    \item \texttt{doc}：\wo \textsf{PilgrimLyieu} 用于文档编写的分支
-    \item \texttt{feph}：\wo \textsf{PilgrimLyieu} 开发的分支
-    \item \texttt{maoyr1}：\vi \textsf{Maoyr} 开发的分支
-    \item \texttt{KashingLi}：\rr \textsf{231250001} 开发的分支
-    \item \texttt{enndwang}：前组员\tv \textsf{wrx} 开发的分支
+    \item \texttt{doc}：\wo 用于文档编写的分支
+    \item \texttt{feph}：\wo 开发的分支
+    \item \texttt{maoyr1}：\vi 开发的分支
+    \item \texttt{KashingLi}：\rr 开发的分支
+    \item \texttt{enndwang}：前组员\tv 开发的分支
     \item \texttt{init}：项目初始化分支，已合并，故废弃
 \end{enumerate}
 
