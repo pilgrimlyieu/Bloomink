@@ -37,7 +37,7 @@ export default defineComponent({
 }
 
 body {
-  background-image: url("https://pilgrimlyieu.github.io/daily/2024-01/12-Raizakura.jpg");
+  background-image: url("/assets/images/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
