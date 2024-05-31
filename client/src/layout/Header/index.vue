@@ -47,6 +47,12 @@
     </template>
 
     <n-scrollbar style="max-height: 480px">
+      <n-alert title="" type="error">
+        由于 CORS 跨域问题，需要进行 API 请求的功能无法正常使用。具体而言，OCR
+        和 AI 的全部功能无法使用。
+      </n-alert>
+      <br />
+
       <n-alert title="简介" type="info">
         「春纷」是一款专为文艺创作者打造的多功能 Markdown
         编辑器，融合了丰富的诗词文化资源和前沿技术，旨在成为您创作道路上的灵感源泉和得力助手。「春纷」提供了如下的附加功能：
