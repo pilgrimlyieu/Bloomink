@@ -10,7 +10,7 @@
       <template #icon>
         <n-icon>
           <img
-            :src="`/assets/icons/${attachment.icon}.svg`"
+            :src="`assets/icons/${attachment.icon}.svg`"
             :alt="attachment.icon"
           />
         </n-icon>

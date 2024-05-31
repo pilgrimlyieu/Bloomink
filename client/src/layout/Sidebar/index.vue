@@ -58,7 +58,7 @@ function renderIcon(iconName) {
   return () =>
     h(NIcon, null, {
       default: () =>
-        h("img", { src: `/assets/icons/${iconName}.svg`, alt: iconName }),
+        h("img", { src: `assets/icons/${iconName}.svg`, alt: iconName }),
     });
 }
 

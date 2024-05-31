@@ -56,7 +56,7 @@ const getData = async (key) => {
   if (savedTags) {
     globalState.tags = savedTags;
   } else {
-    axios.get("/assets/tags.json").then(async (response) => {
+    axios.get("assets/tags.json").then(async (response) => {
       globalState.tags = response.data.tags;
       await storeData("tags", globalState.tags);
     });
@@ -66,7 +66,7 @@ const getData = async (key) => {
   if (savedPoetries) {
     globalState.poetries = savedPoetries;
   } else {
-    axios.get("/assets/poetries.json").then(async (response) => {
+    axios.get("assets/poetries.json").then(async (response) => {
       globalState.poetries = response.data.poetries;
       await storeData("poetries", globalState.poetries);
     });
