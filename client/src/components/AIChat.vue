@@ -105,7 +105,7 @@ export default {
     );
     const messages = ref(
       JSON.parse(localStorage.getItem("AIChat_messages")) ||
-        initMessages(userName)
+        initMessages(userName.value)
     );
     const moduleTypes = [
       { label: "qwen-turbo", value: "qwen-turbo" },
